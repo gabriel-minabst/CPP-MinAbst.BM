@@ -155,6 +155,7 @@ RBP	Register Base Pointer
 RSP	Register Stack Pointer
 R8 - R9	Registers 8 and 9 (Registradores de Propósito Geral)
 R10 - R15: Registradores Gerais
+------------------------------------------------------------
 
 2. ARMv7/v8 (x32, x64):
 
@@ -178,7 +179,7 @@ X3 - Argumento de Função
 X4 - Argumento de Função
 SP - Stack Pointer
 X29 - Frame Pointer
-
+------------------------
 3. PowerPC (x32, x64)
 
 R1	Stack Pointer (Ponteiro de Pilha)
@@ -336,26 +337,45 @@ ________________________________
 -} Gráficos:
 ============
 -] Windows:
-> Requer a chamada de códigos do GSP, e o código inteiro em um .sys empacotado com um executor dele.
+> Requer a chamada de códigos do GUC/SMU/GSP, e o código inteiro em um .sys empacotado com um executor dele.
 
--] Windows:
-> Requer a chamada de códigos do GSP, e o código inteiro em um .ko empacotado com um executor dele.
+-] Linux:
+> Requer a chamada de códigos do GUC/SMU/GSP, e o código inteiro em um .ko empacotado com um executor dele.
 
 -> Parâmetros-Chave:
-1. Endereços e Valores RGB Indexados:
+1. Comandos do GSP:
+- Padrão de Alocação é o tamanho da memória em bytes, HeapID é VRAM e 4096 é o alinhamento.
+
+-] Intel:
+- Padrão de Alocação é o tamanho da memória em bytes, HeapID é VRAM e 4096 é o alinhamento.
+Iniciar: GUC_CMD_GLOBAL_INIT
+Alocar: GUC_CMD_ALLOC_RESOURCE <SIZE>, <HeapID>, <ALIGN>
+Escrever: GUC_CMD_QUEUE_RING_FLUSH
+-------------------
+
+-] AMD:
+Iniciar: SMU_CMD_INIT_PM
+Alocar/Escrever: SMU_CMD_ALLOCATE_MEM <SIZE>, <HeapID>, <ALIGN>
+---------
+
+-] NVidia:
+Iniciar:
+Alocar:
+Escrever:
+-------------------
+
+2. Valores RGB Indexados e Coordenadas de Posição e Desenho para cada Sprite:
 .section .data
-R: .byte 0x00 # Nível da Cor Vermelha
-G: .byte 0x00 # Nível da Cor Verde
-B: .byte 0x00 # # Nível da Cor Azul
+R .byte 0x00: Nível da Cor Vermelha
+G .byte 0x00: Nível da Cor Verde
+B .byte 0x00: Nível da Cor Azul
+SPRITE1_X_POS .byte 0
+SPRITE1_Y_POS .byte 0
+SPRITE1_X .byte 0
+SPRITE1_Y .byte 0
+-----------------------------------------------------------------------------
 
-2. Coordenadas de posição e desenho para cada sprite:
-.section .bss
-X_POS: .byte 0
-Y_POS: .byte 0
-SPRITE_X: .byte 0
-SPRITE_Y: .byte 0
-
--] Bytes de Cores RGB:
+3. Bytes de Cores RGB:
 
 0 0x00
 1 0x01
@@ -626,11 +646,12 @@ _______________
 1. Chamadas de Comandos do HDA (Universal em PCs):
 - Padrôes de formato de stream são NID 0x06, Stream Format 0x200, e Payload 0x441.
 - Padrões de Ativação do Dispositivo de Áudio são 0x40 para a Saída e 0x80 para o Headphone.
+
 CALL SET_STREAM_FORMAT <NID> <STREAM_FORMAT> <PAYLOAD>: Define a taxa, bits e canais para 48kHz/16bit/Estéreo no DAC/ADC.
 CALL SET_PIN_WIDGET_CONTROL <NID> <ENABLE_OUT>: Ativa o pino de saída físico (Ex: Headphone) e sua função de saída.
 CALL MmAllocateContiguousMemory(): Requisito de Kernel para o Ring Buffer (para DMA).
 CALL SET_DMA_RUN_BIT: Aciona o controlador HDA para iniciar o loop de transferência de dados do Ring Buffer para o CODEC.
-
+-------------------------------------------------------------------------------------------------------------------------
 
 2. Definição de Parâmetros de Áudio, Low/Neg_Max e High/Max:
 PI .double 3.14159265358979323846: Número PI.
@@ -647,21 +668,21 @@ NEG_MAX_AMPLITUDE .short -32767: Amplitude Negativa de Bits.
 .section .bss
 PHASE_ACC: resd 1: DoubleWord reservado para o Acumulador de Fase.
 DELTA_PI: .long 42852281: Incremento de Fase (Frequência * 2^32 / Sample Rate).
-
+-------------------------------------------------------------------------------
 
 -] Linux:
 > Requer chamada da kernelapi dma_alloc_coherent(), rótulo dev no DI/EDI/RDI, size em SI/ESI/RSI, dma_handle no DX/EDX/RDX, flags no CX/ECX/RCX (ou tudo na pilha em sistemas x32), e chamada de comandos do HDA, além do código de todo o projeto em um arquivo .ko e seu executor.
 
 -> Parâmetros Gerais:
 1. Chamadas de Comandos do HDA (Universal em PCs):
-Padrôes de formato de stream são NID 0x06, Stream Format 0x200, e Payload 0x441.
-Padrões de Ativação do Dispositivo de Áudio são 0x40 para a Saída e 0x80 para o Headphone.
+- Padrôes de formato de stream são NID 0x06, Stream Format 0x200, e Payload 0x441.
+- Padrões de Ativação do Dispositivo de Áudio são 0x40 para a Saída e 0x80 para o Headphone.
 
 CALL SET_STREAM_FORMAT <NID> <STREAM_FORMAT> <PAYLOAD>: Define a taxa, bits e canais para 48kHz/16bit/Estéreo no DAC/ADC.
 CALL SET_PIN_WIDGET_CONTROL <NID> <ENABLE_OUT>: Ativa o pino de saída físico (Ex: Headphone) e sua função de saída.
 CALL dma_alloc_coherent(): Requisito de Kernel para o Ring Buffer (para DMA).
 CALL SET_DMA_RUN_BIT: Aciona o controlador HDA para iniciar o loop de transferência de dados do Ring Buffer para o CODEC.
-
+-------------------------------------------------------------------------------------------------------------------------
 
 2. Definição de Parâmetros de Áudio, Low/Neg_Max e High/Max:
 dev .
@@ -679,3 +700,4 @@ NEG_MAX_AMPLITUDE .short -32767: Amplitude Negativa de Bits.
 .section .bss
 PHASE_ACC: resd: DoubleWord reservado para o Acumulador de Fase.
 DELTA_PI: .long 42852281: Incremento de Fase (Frequência * 2^32 / Sample Rate).
+-------------------------------------------------------------------------------
