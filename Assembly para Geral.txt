@@ -335,12 +335,15 @@ ________________________________
 ============
 -} Gráficos:
 ============
--> Parâmetros-Chave
+-] Windows:
+> Requer a chamada de códigos do GSP, e o código inteiro em um .sys empacotado com um executor dele.
+
+-] Windows:
+> Requer a chamada de códigos do GSP, e o código inteiro em um .ko empacotado com um executor dele.
+
+-> Parâmetros-Chave:
 1. Endereços e Valores RGB Indexados:
 .section .data
-VideoPhysicalAddress: .quad 0x00000000000000000 # Endereço da VRAM
-VideoNumberOfBytes: .quad 0x00000000 # Número de Bytes do Vídeo
-VideoCacheType: .quad MmCached # Modo de Memória Cacheada
 R: .byte 0x00 # Nível da Cor Vermelha
 G: .byte 0x00 # Nível da Cor Verde
 B: .byte 0x00 # # Nível da Cor Azul
@@ -351,10 +354,6 @@ X_POS: .byte 0
 Y_POS: .byte 0
 SPRITE_X: .byte 0
 SPRITE_Y: .byte 0
-
--] Windows:
-> Requer a syscall MmMapIoSpace(), Rótulos VideoPhysicalAddress no Contador, VideoNumberOfBytes em Dados, e VideoCacheType no Índice de Dados, além do código inteiro em um .sys empacotado com um executor dele.
-
 
 -] Bytes de Cores RGB:
 
@@ -621,13 +620,12 @@ _______________
 ========================================================
 
 -] Windows:
-> Requer a syscall MmAllocateContiguousMemory(), rótulo dev no DI/EDI/RDI, size em SI/ESI/RSI, dma_handle no DX/EDX/RDX e flags no CX/ECX/RCX, além do código de todo o projeto em um arquivo .sys e seu executor.
+> Requer a syscall MmAllocateContiguousMemory(), rótulo dev no CX/ECX/RCX, size em DX/EDX/RDX, dma_handle no R8, flags no R9 (ou tudo na pilha em sistemas x32), e chamada de códigos do HDA, além do código de todo o projeto em um arquivo .sys e seu executor.
 
 -> Parâmetros Gerais:
 1. Chamadas de Comandos do HDA (Universal em PCs):
-Padrôes de formato de stream são NID 0x06, Stream Format 0x200, e Payload 0x441.
-Padrões de Ativação do Dispositivo de Áudio são 0x40 para a Saída e 0x80 para o Headphone.
-
+- Padrôes de formato de stream são NID 0x06, Stream Format 0x200, e Payload 0x441.
+- Padrões de Ativação do Dispositivo de Áudio são 0x40 para a Saída e 0x80 para o Headphone.
 CALL SET_STREAM_FORMAT <NID> <STREAM_FORMAT> <PAYLOAD>: Define a taxa, bits e canais para 48kHz/16bit/Estéreo no DAC/ADC.
 CALL SET_PIN_WIDGET_CONTROL <NID> <ENABLE_OUT>: Ativa o pino de saída físico (Ex: Headphone) e sua função de saída.
 CALL MmAllocateContiguousMemory(): Requisito de Kernel para o Ring Buffer (para DMA).
@@ -644,15 +642,15 @@ MAX_AMPLITUDE .short 32767: Amplitude de Bits.
 NEG_MAX_AMPLITUDE .short -32767: Amplitude Negativa de Bits.
 --------------------------------------------------------------------------------
 
-3. Cálculo da Onda Quadrada:
+3. Cálculo da Onda Senoidal:
 
 .section .bss
-PHASE_ACC: resd 1 # DoubleWord reservado para o Acumulador de Fase.
-DELTA_PI: .long 42852281 # Incremento de Fase (Frequência * 2^32 / Sample Rate).
+PHASE_ACC: resd 1: DoubleWord reservado para o Acumulador de Fase.
+DELTA_PI: .long 42852281: Incremento de Fase (Frequência * 2^32 / Sample Rate).
 
 
 -] Linux:
-> Requer chamada da kernelapi dma_alloc_coherent() e chamada de comandos do HDA ,além do código de todo o projeto em um arquivo .ko e seu executor.
+> Requer chamada da kernelapi dma_alloc_coherent(), rótulo dev no DI/EDI/RDI, size em SI/ESI/RSI, dma_handle no DX/EDX/RDX, flags no CX/ECX/RCX (ou tudo na pilha em sistemas x32), e chamada de comandos do HDA, além do código de todo o projeto em um arquivo .ko e seu executor.
 
 -> Parâmetros Gerais:
 1. Chamadas de Comandos do HDA (Universal em PCs):
@@ -676,8 +674,8 @@ MAX_AMPLITUDE .short 32767: Amplitude de Bits.
 NEG_MAX_AMPLITUDE .short -32767: Amplitude Negativa de Bits.
 --------------------------------------------------------------------------------
 
-3. Cálculo da Onda Quadrada:
+3. Cálculo da Onda Senoidal:
 
 .section .bss
-PHASE_ACC: resd 1 # DoubleWord reservado para o Acumulador de Fase.
-DELTA_PI: .long 42852281 # Incremento de Fase (Frequência * 2^32 / Sample Rate).
+PHASE_ACC: resd: DoubleWord reservado para o Acumulador de Fase.
+DELTA_PI: .long 42852281: Incremento de Fase (Frequência * 2^32 / Sample Rate).
