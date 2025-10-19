@@ -66,6 +66,8 @@ NEG: Nega o valor do operando (converte para o complemento de dois).
 2. Manipulação de Dados/Memória (Uso: Instrução %r1, %r2):
 MOV: Move o valor do primeiro operando (fonte) para o segundo operando (destino).
 LEA: Calcula o endereço efetivo do primeiro operando e o move para o segundo operando (destino).
+LOAD:
+STORE:
 
 3. Instruções Lógicas e de Manipulação de Bits (Uso: Operação %r1, %r2, nas deslocações, Instrução $valor, %r1):
 AND: Realiza a operação AND bit a bit entre os operandos.
@@ -645,24 +647,30 @@ DELTA_PI: .long 42852281 # Incremento de Fase (Frequência * 2^32 / Sample Rate)
 --------------------------------------------------------------------------------
 
 -] Linux:
-> Requer chamada da kernelapi dma_alloc_coherent(), Rótulos runtime no DI/EDI/RDI e dma_addr em AX/EAX/RAX, além do código de todo o projeto em um arquivo .ko e seu executor. O áudio é reproduzido carregando o ponteiro substream (geralmente em RDI) e mover o valor de seu offset RUNTIME\_OFFSET para o reg de Dados, movendo o valor do offset DMA\_ADDR\_OFFSET da estrutura runtime (em RDX) para um registrador de propósito geral e movendo o endereço DMA (agora em RAX) para o registrador de endereço de DMA do seu dispositivo físico.
+> Requer chamada da kernelapi dma_alloc_coherent(), rótulos ,além do código de todo o projeto em um arquivo .ko e seu executor.
+
+-> Parâmetros Gerais:
+1. Chamadas de Comandos do HDA (Universal em PCs):
+Padrôes de formato de stream são NID 0x06, Stream Format 0x200, e Payload 0x441.
+Padrões de Ativação do Dispositivo de Áudio são 0x40 para a Saída e 0x80 para o Headphone.
+
+CALL SET_STREAM_FORMAT <NID> <STREAM_FORMAT> <PAYLOAD>: Define a taxa, bits e canais para 48kHz/16bit/Estéreo no DAC/ADC.
+CALL SET_PIN_WIDGET_CONTROL <NID> <ENABLE_OUT>: Ativa o pino de saída físico (Ex: Headphone) e sua função de saída.
+CALL dma_allocate_memory(): Requisito de Kernel para o Ring Buffer (para DMA).
+CALL SET_DMA_RUN_BIT: Aciona o controlador HDA para iniciar o loop de transferência de dados do Ring Buffer para o CODEC.
 
 
--> Parâmetros Gerais
-1. Definição de Structs, Endereços, Parâmetros de Áudio, Low/Neg_Max e High/Max:
-
-RUNTIME_OFFSET .equ 8 # Distância de 8 bytes de substream.
-DMA_ADDR_OFFSET .equ 104 # Distãncia de 104 bytes de runtime.
-PI .double 3.14159265358979323846 # Número PI.
-SAMPLE_RATE .equ 44100 # Frequência de amostragem (Fs).
-FREQUENCY .short 440: # Frequência do seno (f).
-DURATION .byte 1 # Duração em segundos.
-BITS_PER_SAMPLE .byte 16 # Profundidade de bits.
-MAX_AMPLITUDE .short 32767 # Amplitude de Bits.
-NEG_MAX_AMPLITUDE .short -32767 # Amplitude Negativa de Bits.
+2. Definição de Parâmetros de Áudio, Low/Neg_Max e High/Max:
+PI .double 3.14159265358979323846: Número PI.
+SAMPLE_RATE .equ 44100: Frequência de amostragem (Fs).
+FREQUENCY .short 440: Frequência do seno (f).
+DURATION .byte 1: Duração em segundos.
+BITS_PER_SAMPLE .byte 16: Profundidade de bits.
+MAX_AMPLITUDE .short 32767: Amplitude de Bits.
+NEG_MAX_AMPLITUDE .short -32767: Amplitude Negativa de Bits.
 --------------------------------------------------------------------------------
 
-2. Cálculo da Onda Quadrada:
+3. Cálculo da Onda Quadrada:
 
 .section .bss
 PHASE_ACC: resd 1 # DoubleWord reservado para o Acumulador de Fase.
