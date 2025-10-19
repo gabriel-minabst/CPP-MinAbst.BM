@@ -1,0 +1,669 @@
+==================================================================================================
+-} Assembly para Geral (Diretivas, Instruções e Registradores, Entrada, Gráficos, Áudio e Online):
+==================================================================================================
+
+=============
+-> Diretivas:
+=============
+
+1. Seções de Código e Dados:
+.text: Define o início da seção de código (instruções executáveis).
+.data: Define o início da seção de dados inicializados (variáveis com valor inicial).
+.rodata: Define a seção de dados somente leitura (como strings e constantes).
+.bss: Define a seção de dados não inicializados (variáveis que serão zeradas em tempo de execução).
+.section: Uma alternativa mais genérica para definir uma seção.
+
+2. Definição de Dados e Alocação de Espaço:
+.byte: Insere um ou mais bytes de dados.
+.short ou .hword: Insere um ou mais valores de 16 bits.
+.long ou .word ou .int: Insere um ou mais valores de 32 bits.
+.quad ou .8byte: Insere um ou mais valores de 64 bits.
+.ascii: Insere uma string sem o terminador nulo.
+.asciz: Insere uma string terminada em nulo (\0). (Mais comum para strings).
+.equ: Define um símbolo com um valor constante.
+.space ou .skip: Reserva uma quantidade de bytes, opcionalmente com um valor de preenchimento.
+.align: Alinha o próximo dado ou instrução a um limite de endereço específico (ex: alinhamento de 4 ou 16 bytes).
+.lcomm: Reserva espaço na seção .bss (dados não inicializados).
+
+3. Prefixos, Símbolos e Sufixos:
+
+1. Prefixos:
+$: Prefixo usado para denotar que o operando é um valor literal (constante) e não um endereço de memória ou um registrador.
+%: Prefixo usado antes do nome de um registrador para identificá-lo explicitamente. (Ex: %rax, %rsp, %rdi).
+(): Indica que o valor entre parênteses é um endereço de memória cujo conteúdo deve ser acessado.
+#: Usado para iniciar um comentário de linha única.
+: - Define um rótulo, que é um nome simbólico para um endereço de memória (código ou dado), usado como alvo de instruções de salto (JMP, CALL) ou para referenciar dados.
+*: Usado antes de um operando (registrador ou memória) para indicar que o alvo de um JMP ou CALL é o conteúdo desse operando (o endereço está no registrador/memória).
+.: Endereço Atual/Diretiva
+
+2. Sufixos de Tamanho de Byte:
+B: Byte (8 bits).
+W: Word (16 bits).
+L: Long (32 bits).
+Q: Quadword (64 bits).
+T: Ten bytes (80 bits).
+
+2. Símbolos:
+.globl ou .global: Torna o símbolo visível para outros arquivos objeto (exporta a função ou variável). Essencial para a função de entrada principal.
+.local: Torna o símbolo visível apenas dentro do arquivo atual.
+.type: Define o tipo de um símbolo (ex: @function ou @object).
+.size: Define o tamanho do símbolo.
+.set: Atribui o valor de uma expressão a um símbolo.
+______________________________________________________________________________________________________________________________________________________________________
+
+==============
+-> Instruções:
+==============
+1. Aritmética (Uso: ADD/SUB %r1, %r2, IMUL/IDIV/DEC/NEG %r1, %r2):
+ADD: Soma o primeiro operando ao segundo operando, armazenando no segundo.
+SUB: Subtrai o primeiro operando do segundo operando, armazenando no segundo.
+IMUL: Multiplica os operandos; o resultado pode ser armazenado em um operando ou implicitamente em RDX:RAX.
+IDIV: Divide o valor em RDX:RAX pelo operando; armazena o quociente em RAX e o resto em RDX.
+INC: Incrementa o operando em 1.
+DEC: Decrementa o operando em 1.
+NEG: Nega o valor do operando (converte para o complemento de dois).
+
+2. Manipulação de Dados/Memória (Uso: Instrução %r1, %r2):
+MOV: Move o valor do primeiro operando (fonte) para o segundo operando (destino).
+LEA: Calcula o endereço efetivo do primeiro operando e o move para o segundo operando (destino).
+
+3. Instruções Lógicas e de Manipulação de Bits (Uso: Operação %r1, %r2, nas deslocações, Instrução $valor, %r1):
+AND: Realiza a operação AND bit a bit entre os operandos.
+OR: Realiza a operação OR bit a bit entre os operandos.
+XOR: Realiza a operação XOR bit a bit entre os operandos.
+NOT: Inverte todos os bits do operando.
+SHL: Desloca os bits para a esquerda, preenchendo com zeros à direita. É equivalente a multiplicar por 2n.
+SHR: Desloca os bits para a direita, preenchendo com zeros à esquerda. Usado para números sem sinal.
+SAR: Desloca os bits para a direita, preenchendo com o bit de sinal à esquerda para preservar o sinal do número. Usado para números com sinal.
+ROL: Rotaciona os bits para a esquerda. O bit que sai do mais significativo retorna para o menos significativo.
+ROR: Rotaciona os bits para a direita. O bit que sai do menos significativo retorna para o mais significativo.
+RCL: Rotaciona o operando junto com o Carry Flag (CF).
+RCR: Rotaciona o operando junto com o Carry Flag (CF).
+
+4. Salto Condicional (Uso: CMP %r1, $valor, JMP rótulo):
+CMP: Compara os dois operandos, alterando os flags (Zero, Sinal, Overflow, etc.).
+TEST: Realiza uma operação AND lógica bit a bit e apenas altera os flags.
+JMP: Salto incondicional para o rótulo especificado.
+JE: Salto se o resultado da última comparação/operação foi Igual (ZF=1).
+JNE: Salto se o resultado da última comparação/operação foi Diferente (ZF=0).
+JG: Salto se Maior (salto condicional considerando valores com sinal).
+JL: Salto se Menor (salto condicional considerando valores com sinal).
+JGE: Salto se Maior ou Igual (salto condicional considerando valores com sinal).
+JLE: Salto se Menor ou Igual (salto condicional considerando valores com sinal).
+
+5. Pilha (Uso: PUSH/POP %reg_ou_mem, CALL rótulo):
+PUSH: Empurra o valor do operando para a pilha, decrementando o ponteiro da pilha (%rsp).
+POP: Retira o valor do topo da pilha para o operando destino, incrementando o ponteiro da pilha (%rsp).
+CALL: Empurra o endereço da próxima instrução para a pilha e salta para a sub-rotina.
+RET: Retira o endereço do topo da pilha e salta para esse endereço (retorno de sub-rotina).
+
+6. I/O e Chamadas do Sistema (Uso: MOV $1, %rax):
+SYSCALL: Executa a chamada de sistema cujo número está em %rax, utilizando argumentos em %rdi, %rsi, etc.
+INT: Executa uma interrupção (raramente usado para I/O e syscalls no Linux x86-64 moderno).
+MOV: Usado para configurar os registradores de argumento e o número da syscall antes de `SYSCALL`.
+________________________________________________________________________________________________________________________________________________________________________________
+
+====================================================
+-> Registradores (x86, ARM e PowerPC):
+====================================================
+
+1. x86:
+
+-] 8-bit:
+AL - Acumulador Baixo/Low
+AH - Acumulador Alto/High
+BL - Base Baixa/Low
+BH - Base Alta/High
+CL - Contador Baixo/Low
+CH - Contador Alto/High
+DL - Dados Baixos/Low
+DH - Dados Altos/High
+-------------------------
+
+-] 16-bit:
+AX	Accumulator Register (Registrador Acumulador)
+BX	Base Register (Registrador Base)
+CX	Counter Register (Registrador Contador)
+DX	Data Register (Registrador de Dados)
+DI	Destination Index (Índice de Destino)
+SI	Source Index (Índice de Fonte)
+BP	Base Pointer (Ponteiro Base)
+SP	Stack Pointer (Ponteiro de Pilha)
+------------------------------------------------
+
+-] 32-bit (E Significa Estendido/Extended):
+EAX	Extended Accumulator Register
+EBX	Extended Base Register
+ECX	Extended Counter Register
+EDX	Extended Data Register
+EDI	Extended Destination Index
+ESI	Extended Source Index
+EBP	Extended Base Pointer
+ESP	Extended Stack Pointer
+-------------------------------------------
+
+-] 64-bit:
+RAX	Register Accumulator
+RBX	Register Base
+RCX	Register Counter
+RDX	Register Data
+RDI	Register Destination Index
+RSI	Register Source Index
+RBP	Register Base Pointer
+RSP	Register Stack Pointer
+R8 - R9	Registers 8 and 9 (Registradores de Propósito Geral)
+R10 - R15: Registradores Gerais
+
+2. ARMv7/v8 (x32, x64):
+
+-] 32-bit:
+R0	Argumento 1 / Valor de Retorno
+R1	Argumento 2
+R2	Argumento 3
+R3	Argumento 4
+R4	Variável Local (Preservado pela Chamada)
+R11	Frame Pointer (Ponteiro de Frame) / Variável Local
+R13	Stack Pointer (SP)
+R14	Link Register (LR) (Endereço de Retorno da Função)
+------------------------------------------------------------
+
+-] 64-bit:
+X0 - Argumento de Função
+X19 - Variável Local
+X1 - Argumento de Função
+X2 - Argumento de Função
+X3 - Argumento de Função
+X4 - Argumento de Função
+SP - Stack Pointer
+X29 - Frame Pointer
+
+3. PowerPC (x32, x64)
+
+R1	Stack Pointer (Ponteiro de Pilha)
+R3	Argumento 1 / Valor de Retorno
+R4	Argumento 2
+R5	Argumento 3
+R6	Argumento 4
+R7	Argumento 5
+R14	Volátil (Variável Temporária)
+R30 - R31	Variáveis Locais (Preservados pela Chamada)
+______________________________________________________________________________________________________________________________________________________________________
+
+=======================================================================
+-} Entrada (Para suporte de controles do Computador, Celular e Console)
+=======================================================================
+-> Parâmetros-Chave:
+PRESSED_KEY: .byte 0x00 # Deve ser movido para AL
+
+-> Computador:
+
+0x01 - Esc
+0x02 - 1
+0x03 - 2
+0x04 - 3
+0x05 - 4
+0x06 - 5
+0x07 - 6
+0x08 - 7
+0x09 - 8
+0x0A - 9
+0x0B - 0
+0x0C - -
+0x0D - =
+0x0E - Backspace
+0x0F - Tab
+0x10 - Q
+0x11 - W
+0x12 - E
+0x13 - R
+0x14 - T
+0x15 - Y
+0x16 - U
+0x17 - I
+0x18 - O
+0x19 - P
+0x1A - ´ (acento agudo)
+0x1B - [ (abre colchete)
+0x1C - Enter
+0x1D - Ctrl esquerdo
+0x1E - A
+0x1F - S
+0x20 - D
+0x21 - F
+0x22 - G
+0x23 - H
+0x24 - J
+0x25 - K
+0x26 - L
+0x27 - Ç
+0x28 - ~ (til)
+0x29 - ` (crase)
+0x2A - Shift esquerdo
+0x2B - \ (barra invertida)
+0x2C - Z
+0x2D - X
+0x2E - C
+0x2F - V
+0x30 - B
+0x31 - N
+0x32 - M
+0x33 - , (vírgula)
+0x34 - . (ponto)
+0x35 - ; (ponto e vírgula)
+0x36 - Shift direito
+0x37 - * (no teclado numérico)
+0x38 - Alt esquerdo
+0x39 - Espaço
+0x3A - Caps Lock
+0x3B - F1
+0x3C - F2
+0x3D - F3
+0x3E - F4
+0x3F - F5
+0x40 - F6
+0x41 - F7
+0x42 - F8
+0x43 - F9
+0x44 - F10
+0x45 - Num Lock
+0x46 - Scroll Lock
+0x47 - 7 (teclado numérico)
+0x48 - 8
+0x49 - 9
+0x4A - -
+0x4B - 4
+0x4C - 5
+0x4D - 6
+0x4E - +
+0x4F - 1
+0x50 - 2
+0x51 - 3
+0x52 - 0
+0x53 - . (ponto do teclado numérico)
+0x57 - F11
+0x58 - F12
+
+-> Celular:
+
+-] Consoles:
+
+-> PlayStation:
+
+Cima: 0x00
+Direita: 0x02
+Baixo: 0x04
+Esquerda: 0x06
+Centro: 0x08 ou 0x0F
+Quadrado: 0x60
+X: 0x61
+Bolinha: 0x62
+Triângulo: 0x63
+L1: 0x64
+R1: 0x65
+L2: 0x66
+R2: 0x67
+Share: 0x68
+Options: 0x69
+L3: 0x6C
+R3: 0x6D
+Touchpad: 0x6A
+LEFT_STICK_X: 0x00 a 0xFF
+LEFT_STICK_Y: 0x00 a 0xFF
+RIGHT_STICK_X: 0x00 a 0xFF
+RIGHT_STICK_Y: 0x00 a 0xFF
+
+-> Xbox:
+
+D-Pad Cima: 0x01
+D-Pad Baixo: 0x02
+D-Pad Direita: 0x03
+D-Pad Esquerda: 0x04
+Start: 0x05
+Back: 0x06
+L-Stick: 0x07
+R-Stick: 0x08
+A: 0x0C
+B: 0x0D
+X: 0x0E
+Y: 0x0F
+LB: 0x09
+RB: 0x0A
+________________________________
+
+============
+-} Gráficos:
+============
+-> Parâmetros-Chave
+1. Endereços e Valores RGB Indexados:
+.section .data
+VideoPhysicalAddress: .quad 0x00000000000000000 # Endereço da VRAM
+VideoNumberOfBytes: .quad 0x00000000 # Número de Bytes do Vídeo
+VideoCacheType: .quad MmCached # Modo de Memória Cacheada
+R: .byte 0x00 # Nível da Cor Vermelha
+G: .byte 0x00 # Nível da Cor Verde
+B: .byte 0x00 # # Nível da Cor Azul
+
+2. Coordenadas de posição e desenho para cada sprite:
+.section .bss
+X_POS: .byte 0
+Y_POS: .byte 0
+SPRITE_X: .byte 0
+SPRITE_Y: .byte 0
+
+-] Windows:
+> Requer a syscall MmMapIoSpace(), Rótulos VideoPhysicalAddress no Contador, VideoNumberOfBytes em Dados, e VideoCacheType no Índice de Dados, além do código inteiro em um .sys empacotado com um executor dele.
+
+
+-] Bytes de Cores RGB:
+
+0 0x00
+1 0x01
+2 0x02
+3 0x03
+4 0x04
+5 0x05
+6 0x06
+7 0x07
+8 0x08
+9 0x09
+10 0x0A
+11 0x0B
+12 0x0C
+13 0x0D
+14 0x0E
+15 0x0F
+16 0x10
+17 0x11
+18 0x12
+19 0x13
+20 0x14
+21 0x15
+22 0x16
+23 0x17
+24 0x18
+25 0x19
+26 0x1A
+27 0x1B
+28 0x1C
+29 0x1D
+30 0x1E
+31 0x1F
+32 0x20
+33 0x21
+34 0x22
+35 0x23
+36 0x24
+37 0x25
+38 0x26
+39 0x27
+40 0x28
+41 0x29
+42 0x2A
+43 0x2B
+44 0x2C
+45 0x2D
+46 0x2E
+47 0x2F
+48 0x30
+49 0x31
+50 0x32
+51 0x33
+52 0x34
+53 0x35
+54 0x36
+55 0x37
+56 0x38
+57 0x39
+58 0x3A
+59 0x3B
+60 0x3C
+61 0x3D
+62 0x3E
+63 0x3F
+64 0x40
+65 0x41
+66 0x42
+67 0x43
+68 0x44
+69 0x45
+70 0x46
+71 0x47
+72 0x48
+73 0x49
+74 0x4A
+75 0x4B
+76 0x4C
+77 0x4D
+78 0x4E
+79 0x4F
+80 0x50
+81 0x51
+82 0x52
+83 0x53
+84 0x54
+85 0x55
+86 0x56
+87 0x57
+88 0x58
+89 0x59
+90 0x5A
+91 0x5B
+92 0x5C
+93 0x5D
+94 0x5E
+95 0x5F
+96 0x60
+97 0x61
+98 0x62
+99 0x63
+100 0x64
+101 0x65
+102 0x66
+103 0x67
+104 0x68
+105 0x69
+106 0x6A
+107 0x6B
+108 0x6C
+109 0x6D
+110 0x6E
+111 0x6F
+112 0x70
+113 0x71
+114 0x72
+115 0x73
+116 0x74
+117 0x75
+118 0x76
+119 0x77
+120 0x78
+121 0x79
+122 0x7A
+123 0x7B
+124 0x7C
+125 0x7D
+126 0x7E
+127 0x7F
+128 0x80
+129 0x81
+130 0x82
+131 0x83
+132 0x84
+133 0x85
+134 0x86
+135 0x87
+136 0x88
+137 0x89
+138 0x8A
+139 0x8B
+140 0x8C
+141 0x8D
+142 0x8E
+143 0x8F
+144 0x90
+145 0x91
+146 0x92
+147 0x93
+148 0x94
+149 0x95
+150 0x96
+151 0x97
+152 0x98
+153 0x99
+154 0x9A
+155 0x9B
+156 0x9C
+157 0x9D
+158 0x9E
+159 0x9F
+160 0xA0
+161 0xA1
+162 0xA2
+163 0xA3
+164 0xA4
+165 0xA5
+166 0xA6
+167 0xA7
+168 0xA8
+169 0xA9
+170 0xAA
+171 0xAB
+172 0xAC
+173 0xAD
+174 0xAE
+175 0xAF
+176 0xB0
+177 0xB1
+178 0xB2
+179 0xB3
+180 0xB4
+181 0xB5
+182 0xB6
+183 0xB7
+184 0xB8
+185 0xB9
+186 0xBA
+187 0xBB
+188 0xBC
+189 0xBD
+190 0xBE
+191 0xBF
+192 0xC0
+193 0xC1
+194 0xC2
+195 0xC3
+196 0xC4
+197 0xC5
+198 0xC6
+199 0xC7
+200 0xC8
+201 0xC9
+202 0xCA
+203 0xCB
+204 0xCC
+205 0xCD
+206 0xCE
+207 0xCF
+208 0xD0
+209 0xD1
+210 0xD2
+211 0xD3
+212 0xD4
+213 0xD5
+214 0xD6
+215 0xD7
+216 0xD8
+217 0xD9
+218 0xDA
+219 0xDB
+220 0xDC
+221 0xDD
+222 0xDE
+223 0xDF
+224 0xE0
+225 0xE1
+226 0xE2
+227 0xE3
+228 0xE4
+229 0xE5
+230 0xE6
+231 0xE7
+232 0xE8
+233 0xE9
+234 0xEA
+235 0xEB
+236 0xEC
+237 0xED
+238 0xEE
+239 0xEF
+240 0xF0
+241 0xF1
+242 0xF2
+243 0xF3
+244 0xF4
+245 0xF5
+246 0xF6
+247 0xF7
+248 0xF8
+249 0xF9
+250 0xFA
+251 0xFB
+252 0xFC
+253 0xFD
+254 0xFE
+255 0xFF
+_______________
+
+========================================================
+-} Áudio (Para efeitos sonoros e músicas no seu código):
+========================================================
+
+-] Windows:
+> Requer a syscall MmAllocateContiguousMemory(), Rótulos AudioPhysicalAddress em RCX, AudioNumberOfBytes em RDX, e AudioCacheType no R8, além do código de todo o projeto em um arquivo .sys e seu executor. O áudio é reproduzido em loop movendo RCX para AudioPhysicalAddress, e definindo o Low/NegMax e High/Max.
+
+-> Parâmetros Gerais
+1. Definição de Endereços e Parâmetros de Áudio, Low/Neg_Max e High/Max:
+
+.section .data
+AudioPhysicalAddress .quad 0x0000000000000000
+AudioNumberOfBytes .quad 0x00000000
+AudioCacheType .quad MmNonCache
+PI .double 3.14159265358979323846 # Número PI.
+SAMPLE_RATE .equ 44100 # Frequência de amostragem (Fs).
+FREQUENCY .short 440: # Frequência do seno (f).
+DURATION .byte 1 # Duração em segundos.
+BITS_PER_SAMPLE .byte 16 # Profundidade de bits.
+MAX_AMPLITUDE .short 32767 # Amplitude de Bits.
+NEG_MAX_AMPLITUDE .short -32767 # Amplitude Negativa de Bits.
+--------------------------------------------------------------------------------
+
+2. Cálculo da Onda Senoidal:
+
+.section .bss
+PHASE_ACC: resd 1 # DoubleWord reservado para o Acumulador de Fase.
+DELTA_PI: .long 42852281 # Incremento de Fase (Frequência * 2^32 / Sample Rate).
+--------------------------------------------------------------------------------
+
+-] Linux:
+> Requer chamada da kernelapi dma_alloc_coherent(), Rótulos runtime no DI/EDI/RDI e dma_addr em AX/EAX/RAX, além do código de todo o projeto em um arquivo .ko e seu executor. O áudio é reproduzido carregando o ponteiro substream (geralmente em RDI) e mover o valor de seu offset RUNTIME\_OFFSET para o reg de Dados, movendo o valor do offset DMA\_ADDR\_OFFSET da estrutura runtime (em RDX) para um registrador de propósito geral e movendo o endereço DMA (agora em RAX) para o registrador de endereço de DMA do seu dispositivo físico.
+
+
+-> Parâmetros Gerais
+1. Definição de Structs, Endereços, Parâmetros de Áudio, Low/Neg_Max e High/Max:
+
+RUNTIME_OFFSET .equ 8 # Distância de 8 bytes de substream.
+DMA_ADDR_OFFSET .equ 104 # Distãncia de 104 bytes de runtime.
+PI .double 3.14159265358979323846 # Número PI.
+SAMPLE_RATE .equ 44100 # Frequência de amostragem (Fs).
+FREQUENCY .short 440: # Frequência do seno (f).
+DURATION .byte 1 # Duração em segundos.
+BITS_PER_SAMPLE .byte 16 # Profundidade de bits.
+MAX_AMPLITUDE .short 32767 # Amplitude de Bits.
+NEG_MAX_AMPLITUDE .short -32767 # Amplitude Negativa de Bits.
+--------------------------------------------------------------------------------
+
+2. Cálculo da Onda Quadrada:
+
+.section .bss
+PHASE_ACC: resd 1 # DoubleWord reservado para o Acumulador de Fase.
+DELTA_PI: .long 42852281 # Incremento de Fase (Frequência * 2^32 / Sample Rate).
