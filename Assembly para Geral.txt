@@ -621,33 +621,7 @@ _______________
 ========================================================
 
 -] Windows:
-> Requer a syscall MmAllocateContiguousMemory(), Rótulos AudioPhysicalAddress em RCX, AudioNumberOfBytes em RDX, e AudioCacheType no R8, além do código de todo o projeto em um arquivo .sys e seu executor. O áudio é reproduzido em loop movendo RCX para AudioPhysicalAddress, e definindo o Low/NegMax e High/Max.
-
--> Parâmetros Gerais
-1. Definição de Endereços e Parâmetros de Áudio, Low/Neg_Max e High/Max:
-
-.section .data
-AudioPhysicalAddress .quad 0x0000000000000000
-AudioNumberOfBytes .quad 0x00000000
-AudioCacheType .quad MmNonCache
-PI .double 3.14159265358979323846 # Número PI.
-SAMPLE_RATE .equ 44100 # Frequência de amostragem (Fs).
-FREQUENCY .short 440: # Frequência do seno (f).
-DURATION .byte 1 # Duração em segundos.
-BITS_PER_SAMPLE .byte 16 # Profundidade de bits.
-MAX_AMPLITUDE .short 32767 # Amplitude de Bits.
-NEG_MAX_AMPLITUDE .short -32767 # Amplitude Negativa de Bits.
---------------------------------------------------------------------------------
-
-2. Cálculo da Onda Senoidal:
-
-.section .bss
-PHASE_ACC: resd 1 # DoubleWord reservado para o Acumulador de Fase.
-DELTA_PI: .long 42852281 # Incremento de Fase (Frequência * 2^32 / Sample Rate).
---------------------------------------------------------------------------------
-
--] Linux:
-> Requer chamada da kernelapi dma_alloc_coherent(), rótulos ,além do código de todo o projeto em um arquivo .ko e seu executor.
+> Requer a syscall MmAllocateContiguousMemory(), rótulo dev no DI/EDI/RDI, size em SI/ESI/RSI, dma_handle no DX/EDX/RDX e flags no CX/ECX/RCX, além do código de todo o projeto em um arquivo .sys e seu executor.
 
 -> Parâmetros Gerais:
 1. Chamadas de Comandos do HDA (Universal em PCs):
@@ -656,11 +630,43 @@ Padrões de Ativação do Dispositivo de Áudio são 0x40 para a Saída e 0x80 p
 
 CALL SET_STREAM_FORMAT <NID> <STREAM_FORMAT> <PAYLOAD>: Define a taxa, bits e canais para 48kHz/16bit/Estéreo no DAC/ADC.
 CALL SET_PIN_WIDGET_CONTROL <NID> <ENABLE_OUT>: Ativa o pino de saída físico (Ex: Headphone) e sua função de saída.
-CALL dma_allocate_memory(): Requisito de Kernel para o Ring Buffer (para DMA).
+CALL MmAllocateContiguousMemory(): Requisito de Kernel para o Ring Buffer (para DMA).
 CALL SET_DMA_RUN_BIT: Aciona o controlador HDA para iniciar o loop de transferência de dados do Ring Buffer para o CODEC.
 
 
 2. Definição de Parâmetros de Áudio, Low/Neg_Max e High/Max:
+PI .double 3.14159265358979323846: Número PI.
+SAMPLE_RATE .equ 44100: Frequência de amostragem (Fs).
+FREQUENCY .short 440: Frequência do seno (f).
+DURATION .byte 1: Duração em segundos.
+BITS_PER_SAMPLE .byte 16: Profundidade de bits.
+MAX_AMPLITUDE .short 32767: Amplitude de Bits.
+NEG_MAX_AMPLITUDE .short -32767: Amplitude Negativa de Bits.
+--------------------------------------------------------------------------------
+
+3. Cálculo da Onda Quadrada:
+
+.section .bss
+PHASE_ACC: resd 1 # DoubleWord reservado para o Acumulador de Fase.
+DELTA_PI: .long 42852281 # Incremento de Fase (Frequência * 2^32 / Sample Rate).
+
+
+-] Linux:
+> Requer chamada da kernelapi dma_alloc_coherent() e chamada de comandos do HDA ,além do código de todo o projeto em um arquivo .ko e seu executor.
+
+-> Parâmetros Gerais:
+1. Chamadas de Comandos do HDA (Universal em PCs):
+Padrôes de formato de stream são NID 0x06, Stream Format 0x200, e Payload 0x441.
+Padrões de Ativação do Dispositivo de Áudio são 0x40 para a Saída e 0x80 para o Headphone.
+
+CALL SET_STREAM_FORMAT <NID> <STREAM_FORMAT> <PAYLOAD>: Define a taxa, bits e canais para 48kHz/16bit/Estéreo no DAC/ADC.
+CALL SET_PIN_WIDGET_CONTROL <NID> <ENABLE_OUT>: Ativa o pino de saída físico (Ex: Headphone) e sua função de saída.
+CALL dma_alloc_coherent(): Requisito de Kernel para o Ring Buffer (para DMA).
+CALL SET_DMA_RUN_BIT: Aciona o controlador HDA para iniciar o loop de transferência de dados do Ring Buffer para o CODEC.
+
+
+2. Definição de Parâmetros de Áudio, Low/Neg_Max e High/Max:
+dev .
 PI .double 3.14159265358979323846: Número PI.
 SAMPLE_RATE .equ 44100: Frequência de amostragem (Fs).
 FREQUENCY .short 440: Frequência do seno (f).
