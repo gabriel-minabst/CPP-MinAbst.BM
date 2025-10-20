@@ -319,11 +319,11 @@ Options: 0x69
 L3: 0x6C
 R3: 0x6D
 Touchpad: 0x6A
-LEFT_STICK_X (0x00 a 0xFF): .short 0x00
-LEFT_STICK_Y (0x00 a 0xFF): .short 0x00
-RIGHT_STICK_X (0x00 a 0xFF): .short 0x00
-RIGHT_STICK_Y (0x00 a 0xFF): .short 0x00
-----------------------------------------------
+LEFT_STICK_X (0x0000 a 0xFFFF): .short 0x0000
+LEFT_STICK_Y (0x0000 a 0xFFFF): .short 0x0000
+RIGHT_STICK_X (0x0000 a 0xFFFF): .short 0x0000
+RIGHT_STICK_Y (0x0000 a 0xFFFF): .short 0x0000
+--------------------------------------------------------------------------------
 
 2. Xbox:
 D-Pad Cima: 0x01
@@ -340,10 +340,8 @@ X: 0x0E
 Y: 0x0F
 LB: 0x09
 RB: 0x0A
-LT: 
-------------------------------------
-3. Nintendo:
-
+LT (0x00 a 0xFF): .byte 0x00
+RT (0x00 a 0xFF): .byte 0x00
 ________________________________
 
 ==========================
