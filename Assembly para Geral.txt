@@ -401,7 +401,7 @@ Iniciar: SMU_CMD_INIT_PM
 Alocar/Escrever: SMU_CMD_ALLOCATE_MEM <SIZE>, <HeapID>, <ALIGN>
 ---------------------------------------------------------------------------------------------------------------------
 -] NVidia:
-Iniciar: GSP_CMD_INIT_RM
+Iniciar: GSP_CMD_INIT_RM $0x1
 Alocar: GSP_CMD_ALLOC_OBJECT <SIZE>, <HeapID>, <ALIGN>
 Escrever: GSP_CMD_SUBMIT_WORK
 ----------------------------------------------------------------------------------------------------
@@ -411,7 +411,7 @@ Ler (Requer comparação com zero e loop caso não seja zero): JOB_STATUS
 Escrever: JOB_RING_BASE $0x0, JOB_RING_WTPR $0x0
 
 2. Valores RGB Indexados e Coordenadas de Posição e Desenho para cada Sprite:
-> Um valor de cor varia de 0 a 255 (0x00 a 0xFF).
+> Um valor de cor varia de 0 a 255 (0x00 a 0xFF), e os valores X e Y de cada sprite devem ser multiplicados antes da escrita na memória de vídeo.
 
 .section .data
 R .byte 0x00: Nível da Cor Vermelha
