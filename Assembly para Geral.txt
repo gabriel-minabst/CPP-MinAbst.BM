@@ -13,7 +13,7 @@
 .code16: Define a seção de código 16-bit.
 .code32: Define a seção de código 32-bit.
 .code64: Define a seção de código 64-bit.
-
+---------------------------------------------------------------------------------------------------
 2. Definição de Dados e Alocação de Espaço:
 .byte: Insere um ou mais bytes de dados.
 .short ou .hword: Insere um ou mais valores de 16 bits.
@@ -25,7 +25,7 @@
 .space ou .skip: Reserva uma quantidade de bytes, opcionalmente com um valor de preenchimento.
 .align: Alinha o próximo dado ou instrução a um limite de endereço específico (ex: alinhamento de 4 ou 16 bytes).
 .lcomm: Reserva espaço na seção .bss (dados não inicializados).
-
+-----------------------------------------------------------------------------------------------------------------
 3. Prefixos, Símbolos e Sufixos:
 
 3.1. Prefixos:
@@ -36,14 +36,14 @@ $: Prefixo usado para denotar que o operando é um valor literal (constante) e n
 : - Define um rótulo, que é um nome simbólico para um endereço de memória (código ou dado), usado como alvo de instruções de salto (JMP, CALL) ou para referenciar dados.
 *: Usado antes de um operando (registrador ou memória) para indicar que o alvo de um JMP ou CALL é o conteúdo desse operando (o endereço está no registrador/memória).
 .: Endereço Atual/Diretiva
-
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 3.2. Sufixos de Tamanho de Byte para Instruções:
 B: Byte (8 bits).
 W: Word (16 bits).
 L: Long (32 bits).
 Q: Quadword (64 bits).
 T: Ten bytes (80 bits).
-----------------------------------------------------
+------------------------------------------------
 
 4. Símbolos:
 .globl ou .global: Torna o símbolo visível para outros arquivos objeto (exporta a função ou variável). Essencial para a função de entrada principal.
@@ -51,7 +51,7 @@ T: Ten bytes (80 bits).
 .type: Define o tipo de um símbolo (ex: @function ou @object).
 .size: Define o tamanho do símbolo.
 .set: Atribui o valor de uma expressão a um símbolo.
-_________________________________________________________________________________________________________________________________________________________________________
+____________________________________________________________________________________________________________________________________________________
 ==============
 -> Instruções:
 ==============
@@ -63,13 +63,13 @@ IDIV: Divide o valor em %dx:%ax/%edx:%eax/%rdx:%rax/%r3:%r0/%x3:%x0/%r3:%r0 pelo
 INC: Incrementa o operando em 1.
 DEC: Decrementa o operando em 1.
 NEG: Nega o valor do operando (converte para o complemento de dois).
-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------------------------------
 2. Manipulação de Dados/Memória (Uso: Instrução %r1, %r2):
 MOV: Move o valor do primeiro operando (fonte) para o segundo operando (destino).
 LEA: Calcula o endereço efetivo do primeiro operando e o move para o segundo operando (destino).
 LOAD: Calcula um endereço do primeiro operando e move para o segundo operando.
 STORE: Armazena um dado de um operando na memória.
---------------------------------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------
 3. Instruções Lógicas e de Manipulação de Bits (Uso: Operação %r1, %r2, nas deslocações, Instrução $valor, %r1):
 AND: Realiza a operação AND bit a bit entre os operandos.
 OR: Realiza a operação OR bit a bit entre os operandos.
@@ -82,7 +82,7 @@ ROL: Rotaciona os bits para a esquerda. O bit que sai do mais significativo reto
 ROR: Rotaciona os bits para a direita. O bit que sai do menos significativo retorna para o mais significativo.
 RCL: Rotaciona o operando junto com o Carry Flag (CF).
 RCR: Rotaciona o operando junto com o Carry Flag (CF).
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------------------------
 4. Salto Condicional (Uso: CMP %r1, $valor, JMP rótulo):
 CMP: Compara os dois operandos, alterando os flags (Zero, Sinal, Overflow, etc.).
 TEST: Realiza uma operação AND lógica bit a bit e apenas altera os flags.
@@ -93,19 +93,19 @@ JG: Salto se Maior (salto condicional considerando valores com sinal).
 JL: Salto se Menor (salto condicional considerando valores com sinal).
 JGE: Salto se Maior ou Igual (salto condicional considerando valores com sinal).
 JLE: Salto se Menor ou Igual (salto condicional considerando valores com sinal).
---------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 5. Pilha (Uso: PUSH/POP %reg_ou_mem, CALL rótulo):
 PUSH: Empurra o valor do operando para a pilha, decrementando o ponteiro da pilha (%PILHA).
 POP: Retira o valor do topo da pilha para o operando destino, incrementando o ponteiro da pilha (%PILHA).
 CALL: Empurra o endereço da próxima instrução para a pilha e salta para a sub-rotina.
 RET: Retira o endereço do topo da pilha e salta para esse endereço (retorno de sub-rotina).
 IRET:
---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------
 6. I/O (Uso: INT $1, %ax/%eax/%rax/%r0/%x0/%r3):
 INT: Executa uma interrupção.
 IN: Envia um sinal de entrada.
 OUT: Envia um sinal de saída.
-________________________________________________________________________________________________________________________________________________________________________________
+________________________________________________
 ====================================================================
 -} SystemV ABI (Para Interações com Código C Externo e Bibliotecas):
 ====================================================================
@@ -118,7 +118,7 @@ Caller-Saved (Preservados na Função): %ACUMULADOR, %CONTADOR, %DADOS.
 Retorno: %ACUMULADOR
 Callee-Saved (Preservados na Chamada): %BASE, %BÔNUS, %PILHA, %R12-15.
 Caller-Saved (Preservados na Função): %ACUMULADOR, %CONTADOR, %DADOS, %FONTE, %DESTINO, %R8-R11.
-________________________________________________________________________________________________________________
+________________________________________________________________________________________________
 ======================================
 -> Registradores (x86, ARM e PowerPC):
 ======================================
@@ -133,9 +133,9 @@ CL: Contador Baixo/Low
 CH: Contador Alto/High
 DL: Dados Baixos/Low
 DH: Dados Altos/High
--------------------------------------------
+------------------------
 -] 16-bit:
--------------
+----------
 1. Caller-Saved (Registrador):
 AX: Accumulator Register (Registrador Acumulador)
 BX: Base Register (Registrador Base)
@@ -149,7 +149,7 @@ BP: Base Pointer (Ponteiro Base)
 SP: Stack Pointer (Ponteiro de Pilha)
 -----------------------------------------
 -] 32-bit:
--------------
+----------
 1. Caller-Saved (Registrador):
 EAX: Extended Accumulator Register
 EBX: Extended Base Register
@@ -163,7 +163,7 @@ EBP: Extended Base Pointer
 ESP: Extended Stack Pointer
 -------------------------------
 -] 64-bit:
--------------
+----------
 1. Caller-Saved (Registrador):
 RAX: Register Accumulator
 RBX: Register Base
@@ -180,7 +180,7 @@ R10 - R15: Registradores Gerais
 -------------------------------------------------------------
 2. ARMv7/v8 (x32, x64):
 -] 32-bit:
--------------
+----------
 1. Caller-Saved (Registrador/Função):
 R0: Argumento 1 / Valor de Retorno
 R1: Argumento 2
@@ -215,7 +215,7 @@ R7: Argumento 5
 R1: Stack Pointer (Ponteiro de Pilha)
 R14: Volátil (Variável Temporária)
 R30 - R31: Variáveis Locais (Preservados pela Chamada)
-______________________________________________________________________________________________________________________________________________________________________
+______________________________________________________
 ========================================================================
 -} Entrada (Para suporte de controles do Computador, Celular e Console):
 ========================================================================
@@ -385,7 +385,7 @@ ________________________________________________________________________________
 ============
 -} Gráficos:
 ============
-! Nota: Todos os dados devem estar em %BASE
+! Nota: Todos os dados devem estar em %ACUMULADOR
 > Requer a chamada de códigos do GUC/SMU/GSP/SOC-GSP, e o código inteiro em um .sys/.ko empacotado com um executor dele.
 
 1. Comandos do GSP (CALL para uso):
@@ -395,7 +395,7 @@ ________________________________________________________________________________
 Iniciar: GUC_CMD_GLOBAL_INIT
 Alocar: GUC_CMD_ALLOC_RESOURCE <SIZE>, <HeapID>, <ALIGN>
 Escrever: GUC_CMD_QUEUE_RING_FLUSH
------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
 -] AMD:
 Iniciar: SMU_CMD_INIT_PM
 Alocar/Escrever: SMU_CMD_ALLOCATE_MEM <SIZE>, <HeapID>, <ALIGN>
@@ -411,18 +411,19 @@ Ler (Requer comparação com zero e loop caso não seja zero): JOB_STATUS
 Escrever: JOB_RING_BASE $0x0, JOB_RING_WTPR $0x0
 
 2. Células, Valores RGB Indexados e Coordenadas de Posição:
-> Um valor de cor varia de 0 a 255 (0x00 a 0xFF), e um offset da célula deve ser defindo antes da escrita na memória de vídeo.
+> Um valor de cor varia de 0 a 255 (0x00 a 0xFF), tudo deverá estar adicionado em %ACUMULADOR e um offset da célula deve ser defindo antes da escrita na memória de vídeo.
 > Fórmula do OFFSET: Offset da Célula} = (Y_Célula * 128 + X_Célula)
 
 .section .data
 R .byte 0x00: Nível da Cor Vermelha
 G .byte 0x00: Nível da Cor Verde
 B .byte 0x00: Nível da Cor Azul
+RESOLUTION $128
 CELL1 .ascii [desenho]
-CELL1_OFFSET (20 * 128 * 10)
+CELL1_OFFSET (CELL1_Y * 128 * CELL1_X)
 CELL1_X 10
-CELL1_Y
-____________________________________________________________________________________________________________________________________________________________________________________________________________________
+CELL1_Y 20
+_______________________________________________________________________________________________________________________________________________________________
 ========================================================
 -} Áudio (Para efeitos sonoros e músicas no seu código):
 ========================================================
@@ -434,7 +435,7 @@ ________________________________________________________________________________
 - Padrões de Ativação do Dispositivo de Áudio são 0x40 para a Saída e 0x80 para o Headphone.
 CALL SET_STREAM_FORMAT <NID> <STREAM_FORMAT> <PAYLOAD>: Define a taxa, bits e canais para 48kHz/16bit/Estéreo no DAC/ADC.
 CALL SET_PIN_WIDGET_CONTROL <NID> <ENABLE_OUT>: Ativa o pino de saída físico (Ex: Headphone) e sua função de saída.
-MOV [DELTA_PI], %BX/%EBX/RBX/%R1/%X1/%R4
+MOV [DELTA_PI], %BASE
 CALL SET_DMA_RUN_BIT: Aciona o controlador HDA para iniciar o loop de transferência de dados do Ring Buffer para o CODEC.
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 2. Definição de Parâmetros de Áudio, Low/Neg_Max e High/Max:
