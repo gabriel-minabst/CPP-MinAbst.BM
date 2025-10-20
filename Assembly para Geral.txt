@@ -61,18 +61,18 @@ ________________________________________________________________________________
 1. Aritmética (Uso: ADD/SUB %r1, %r2, IMUL/IDIV/DEC/NEG %r1, %r2):
 ADD: Soma o primeiro operando ao segundo operando, armazenando no segundo.
 SUB: Subtrai o primeiro operando do segundo operando, armazenando no segundo.
-IMUL: Multiplica os operandos; o resultado pode ser armazenado em um operando ou implicitamente em RDX:RAX.
-IDIV: Divide o valor em RDX:RAX pelo operando; armazena o quociente em RAX e o resto em RDX.
+IMUL: Multiplica os operandos; o resultado pode ser armazenado em um operando ou implicitamente em %ax:%dx/%eax:%edx/%rax:%rdx/%r0:%r3/%x0:%x3/%r0:%r3.
+IDIV: Divide o valor em %dx:%ax/%edx:%eax/%rdx:%rax/%r3:%r0/%x3:%x0/%r3:%r0 pelo operando; armazena o quociente em RAX e o resto em RDX.
 INC: Incrementa o operando em 1.
 DEC: Decrementa o operando em 1.
 NEG: Nega o valor do operando (converte para o complemento de dois).
-
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 2. Manipulação de Dados/Memória (Uso: Instrução %r1, %r2):
 MOV: Move o valor do primeiro operando (fonte) para o segundo operando (destino).
 LEA: Calcula o endereço efetivo do primeiro operando e o move para o segundo operando (destino).
-LOAD:
-STORE:
-
+LOAD: Calcula um endereço do primeiro operando e move para o segundo operando.
+STORE: Armazena um dado de um operando na memória.
+--------------------------------------------------------------------------------------------------------------------------------------------------------------
 3. Instruções Lógicas e de Manipulação de Bits (Uso: Operação %r1, %r2, nas deslocações, Instrução $valor, %r1):
 AND: Realiza a operação AND bit a bit entre os operandos.
 OR: Realiza a operação OR bit a bit entre os operandos.
@@ -85,7 +85,7 @@ ROL: Rotaciona os bits para a esquerda. O bit que sai do mais significativo reto
 ROR: Rotaciona os bits para a direita. O bit que sai do menos significativo retorna para o mais significativo.
 RCL: Rotaciona o operando junto com o Carry Flag (CF).
 RCR: Rotaciona o operando junto com o Carry Flag (CF).
-
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 4. Salto Condicional (Uso: CMP %r1, $valor, JMP rótulo):
 CMP: Compara os dois operandos, alterando os flags (Zero, Sinal, Overflow, etc.).
 TEST: Realiza uma operação AND lógica bit a bit e apenas altera os flags.
@@ -96,17 +96,15 @@ JG: Salto se Maior (salto condicional considerando valores com sinal).
 JL: Salto se Menor (salto condicional considerando valores com sinal).
 JGE: Salto se Maior ou Igual (salto condicional considerando valores com sinal).
 JLE: Salto se Menor ou Igual (salto condicional considerando valores com sinal).
-
+--------------------------------------------------------------------------------------------------------------------------------
 5. Pilha (Uso: PUSH/POP %reg_ou_mem, CALL rótulo):
-PUSH: Empurra o valor do operando para a pilha, decrementando o ponteiro da pilha (%rsp).
-POP: Retira o valor do topo da pilha para o operando destino, incrementando o ponteiro da pilha (%rsp).
+PUSH: Empurra o valor do operando para a pilha, decrementando o ponteiro da pilha (%sp/%esp/%rsp/%r13/%sp/%r1).
+POP: Retira o valor do topo da pilha para o operando destino, incrementando o ponteiro da pilha (%sp/%esp/%rsp/%r13/%sp/%r1).
 CALL: Empurra o endereço da próxima instrução para a pilha e salta para a sub-rotina.
 RET: Retira o endereço do topo da pilha e salta para esse endereço (retorno de sub-rotina).
-
-6. I/O e Chamadas do Sistema (Uso: MOV $1, %rax):
-SYSCALL: Executa a chamada de sistema cujo número está em %rax, utilizando argumentos em %rdi, %rsi, etc.
-INT: Executa uma interrupção (raramente usado para I/O e syscalls no Linux x86-64 moderno).
-MOV: Usado para configurar os registradores de argumento e o número da syscall antes de `SYSCALL`.
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+6. I/O (Uso: INT $1, %ax/%eax/%rax/%r0/%x0/%r3):
+INT: Executa uma interrupção
 ________________________________________________________________________________________________________________________________________________________________________________
 
 ====================================================
@@ -122,8 +120,7 @@ CL: Contador Baixo/Low
 CH: Contador Alto/High
 DL: Dados Baixos/Low
 DH: Dados Altos/High
--------------------------
-
+--------------------------------------
 -] 16-bit:
 AX: Accumulator Register (Registrador Acumulador)
 BX: Base Register (Registrador Base)
@@ -133,8 +130,7 @@ DI: Destination Index (Índice de Destino)
 SI: Source Index (Índice de Fonte)
 BP: Base Pointer (Ponteiro Base)
 SP: Stack Pointer (Ponteiro de Pilha)
-------------------------------------------------
-
+------------------------------------------------------------------------------------
 -] 32-bit (E Significa Estendido/Extended):
 EAX: Extended Accumulator Register
 EBX: Extended Base Register
@@ -145,7 +141,6 @@ ESI: Extended Source Index
 EBP: Extended Base Pointer
 ESP: Extended Stack Pointer
 ------------------------------------------------------------------
-
 -] 64-bit:
 RAX: Register Accumulator
 RBX: Register Base
@@ -158,7 +153,6 @@ RSP: Register Stack Pointer
 R8 - R9: Registers 8 and 9 (Registradores de Propósito Geral)
 R10 - R15: Registradores Gerais
 --------------------------------------------------------------------------------------------------
-
 2. ARMv7/v8 (x32, x64):
 -] 32-bit:
 R0: Argumento 1 / Valor de Retorno
@@ -170,7 +164,6 @@ R11: Frame Pointer (Ponteiro de Frame) / Variável Local
 R13: Stack Pointer (SP)
 R14: Link Register (LR) (Endereço de Retorno da Função)
 --------------------------------------------------------------------------------------------
-
 -] 64-bit:
 X0: Argumento de Função
 X19: Variável Local
@@ -195,9 +188,11 @@ ________________________________________________________________________________
 =======================================================================
 -} Entrada (Para suporte de controles do Computador, Celular e Console)
 =======================================================================
+Uso: CALL [Função/Comando] e CMP [hex], 1. Em celulares, CMP [Comando], 1
+
 -> Parâmetros-Chave:
 PRESSED_KEY: .byte 0x00: Deve ser movido para AL
------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------------
 -> Computador:
 0x01 - Esc
 0x02 - 1
@@ -285,7 +280,7 @@ PRESSED_KEY: .byte 0x00: Deve ser movido para AL
 0x57 - F11
 0x58 - F12
 ----------------------------------------------------------
--> Celular:
+-> Celular :
 I2C_START_TRANSMISSION: Gerar a condição START (SDA LOW, SCL HIGH). Iniciar a comunicação com o TCIC.
 I2C_SEND_SLAVE_ADDR_WRITE <0x00>: Enviar o endereço do TCIC + bit de escrita (0). Dizer ao TCIC para escutar o endereço de registro.
 I2C_SEND_SLAVE_ADDR_READ <0x00>: Gerar REPEATED START ou START + Endereço do TCIC + bit de leitura (1). Dizer ao TCIC para enviar os dados.
@@ -364,9 +359,8 @@ ________________________________________________________________________________
 -] Windows e Linux:
 > Requer a chamada de códigos do GUC/SMU/GSP, e o código inteiro em um .sys/.ko empacotado com um executor dele.
 
-1. Comandos do GSP:
+1. Comandos do GSP (CALL para uso):
 - Padrão de Alocação é o tamanho da memória em bytes, HeapID é VRAM e 4096 é o alinhamento.
-
 -] Intel:
 Iniciar: GUC_CMD_GLOBAL_INIT
 Alocar: GUC_CMD_ALLOC_RESOURCE <SIZE>, <HeapID>, <ALIGN>
@@ -379,10 +373,10 @@ Alocar/Escrever: SMU_CMD_ALLOCATE_MEM <SIZE>, <HeapID>, <ALIGN>
 ---------------------------------------------------------------------------------------------------------------------
 
 -] NVidia:
-Iniciar:
-Alocar:
-Escrever:
--------------------
+Iniciar: GSP_CMD_INIT_RM
+Alocar: GSP_CMD_ALLOC_OBJECT <SIZE>, <HeapID>, <ALIGN>
+Escrever: GSP_CMD_SUBMIT_WORK
+----------------------------------------------------------------------------------------------------
 
 2. Valores RGB Indexados e Coordenadas de Posição e Desenho para cada Sprite:
 .section .data
