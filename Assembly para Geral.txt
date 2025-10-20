@@ -65,8 +65,6 @@ NEG: Nega o valor do operando (converte para o complemento de dois).
 2. Manipulação de Dados/Memória (Uso: Instrução %reg1, %reg2):
 MOV: Move o valor do primeiro operando (fonte) para o segundo operando (destino).
 LEA: Calcula o endereço efetivo do primeiro operando e o move para o segundo operando (destino).
-LOAD: Calcula um endereço do primeiro operando e move para o segundo operando.
-STORE: Armazena um dado de um operando na memória.
 ------------------------------------------------------------------------------------------------
 3. Instruções Lógicas e de Manipulação de Bits (Uso: Operação %r1, %r2, nas deslocações, Instrução $valor, %reg):
 AND: Realiza a operação AND bit a bit entre os operandos.
@@ -407,8 +405,14 @@ Escrever: GSP_CMD_SUBMIT_WORK
 Iniciar: GSP_RESET $0x1, GSP_CLK_CFG $0x0
 Ler (Requer comparação com zero e loop caso não seja zero): JOB_STATUS
 Escrever: JOB_RING_BASE $0x0, JOB_RING_WTPR $0x0
-
-2. Células, Valores RGB Indexados e Coordenadas de Posição:
+----------------------------------------------------------------------------------------------------------
+2. Elementos Gráficos:
+█ Bloco Sólido: 0xDB
+▓ Sombra Escura: 0xB2
+▒ Sombra Média: 0xB1
+░ Sombra Leve: 0xB0
+----------------------
+3. Células, Valores RGB Indexados e Coordenadas de Posição:
 > Um valor de cor varia de 0 a 255 (0x00 a 0xFF), o OFFSET deve estar em %BASE, e os dados gráficos da célula em %ACUMULADOR.
 > Fórmula do OFFSET: Offset da Célula = (Y_Célula * 128 + X_Célula * 3)
 
@@ -416,11 +420,11 @@ Escrever: JOB_RING_BASE $0x0, JOB_RING_WTPR $0x0
 R .byte 0x00: Nível da Cor Vermelha
 G .byte 0x00: Nível da Cor Verde
 B .byte 0x00: Nível da Cor Azul
-RESOLUTION $128
+RESOLUTION $160
 CELL1 .ascii [desenho]
-CELL1_OFFSET (CELL1_Y * 128 + CELL1_X * 3)
-CELL1_X 10
-CELL1_Y 20
+CELL1_OFFSET (CELL1_Y * 160 + CELL1_X * 3)
+CELL1_X 80
+CELL1_Y 25
 
 ========================================================
 -} Áudio (Para efeitos sonoros e músicas no seu código):
