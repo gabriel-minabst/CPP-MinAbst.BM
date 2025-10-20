@@ -203,20 +203,32 @@ RT (Z'00' a Z'FF'):
 Leitura: CALL INT Z'13h'/Z'00000013'/Z'0000000000000013', AH=Z'42h'/Z'00000042'/Z'0000000000000042'
 Escrita: CALL INT Z'13h'/Z'00000013'/Z'0000000000000013', AH=Z'43h'/Z'00000043'/Z'0000000000000043'
 
-2. Mapeamento de Disco:
-INTEGER DISK_MAP16_PTR, DISK_MAP32_PTR, DISK_MAP64_PTR
-COMMON DISK_MAP16_PTR, DISK_MAP32_PTR, DISK_MAP64_PTR
-DISK_MAP16_PTR = Z'42h'
-DISK_MAP32_PTR = Z'00000042'
-DISK_MAP64_PTR = Z'0000000000000042'
+2. Interrupções de RAM:
+Mapeamento: CALL INT Z'15h'/Z'00000015'/Z'0000000000000015', AH=Z'E820h'/Z'0000E820'/Z'000000000000E820'
 
-3. Mapeamento de RAM:
+3. Mapeamento de Disco:
+Uso: Definir DAP, Chamar INT de Leitura de Disco Rígido, e depois Chamar INT de Escrita no Disco Rígido.
+
+-> DAP (Disk Address Packet):
+Z'00' Tamanho do DAP: Deve ser Z'10' (16 bytes).
+Z'01' Reservado: Deve ser Z'00'.
+Z'02' Contagem de Blocos: O número de setores (blocos) a serem lidos. (Ex: Z'0001' para ler apenas um setor).
+Z'04' Endereço de Transferência (Offset:Segmento): O endereço de 32 bits (16:16) na RAM onde os dados lidos do disco serão enviados. É o endereço de destino (o buffer).
+Z'08' Inicial: O endereço do setor no disco a partir do qual a leitura deve começar. (Ex: Z'0000000000000001' para o primeiro setor após o MBR).
+
+INTEGER DAP_SIZE, DAP_RESV, DAP_BLK_CNT, DAP_OFFSET
+COMMON DAP_SIZE, DAP_RESV, DAP_BLK_CNT, DAP_OFFSET
+DAP_SIZE = Z'10'
+DAP_RESV = Z'00'
+DAP_BLK_CNT = Z'0001'
+DAP_OFFSET = MMAP16_PTR/MMAP32_PTR/MMAP64_PTR
+
+4. Mapeamento de RAM:
 INTEGER MMAP16_PTR, MMAP32_PTR, MMAP64_PTR
 COMMON MMAP16_PTR, MMAP32_PTR, MMAP64_PTR
 MMAP16_PTR = Z'E820h'
 MMAP32_PTR = Z'0000E820'
 MMAP64_PTR = Z'000000000000E820'
-
 
 ============
 -} Gráficos:
