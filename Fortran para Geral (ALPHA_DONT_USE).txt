@@ -177,51 +177,49 @@ RIGHT_STICK_X (Z'0000' a Z'FFFF'):
 RIGHT_STICK_Y (Z'0000' a Z'FFFF'):
 ----------------------------------------------
 2. Xbox:
-D-Pad Cima: 0x01
-D-Pad Baixo: 0x02
-D-Pad Direita: 0x03
-D-Pad Esquerda: 0x04
-Start: 0x05
-Back: 0x06
-L-Stick: 0x07
-R-Stick: 0x08
-A: 0x0C
-B: 0x0D
-X: 0x0E
-Y: 0x0F
-LB: 0x09
-RB: 0x0A
-LT (0x00 a 0xFF): .byte 0x00
-RT (0x00 a 0xFF): .byte 0x00
+D-Pad Cima: Z'01'
+D-Pad Baixo: Z'02'
+D-Pad Direita: Z'03'
+D-Pad Esquerda: Z'04'
+Start: Z'05'
+Back: Z'06'
+L-Stick: Z'07'
+R-Stick: Z'08'
+A: Z'0C'
+B: Z'0D'
+X: Z'0E'
+Y: Z'0F'
+LB: Z'09'
+RB: Z'0A'
+LT (Z'00' a Z'FF'):
+RT (Z'00' a Z'FF'):
 
 ==========================
 -} Mapeamento de Memória:
 ==========================
-> Usa uma interrupção para ver o mapa de memória, permitindo que você possa escrever na RAM.
+> Usa uma interrupção para ver um mapa de memória, permitindo que escreva nela.
 
-1. x16:
-CALL INT Z'15h', %ACUMULADOR=E820h
---------------------------
-2. x32:
-CALL INT Z'00000015', %ACUMULADOR=Z'0000E820'
--------------------------------------
-3. x64:
-CALL INT Z'0000000000000015', %ACUMULADOR=Z'000000000000E820'
+1. Interrupções de Discos Rígidos:
+Leitura: CALL INT Z'13h'/Z'00000013'/Z'0000000000000013', AH=Z'42h'/Z'00000042'/Z'0000000000000042'
+Escrita: CALL INT Z'13h'/Z'00000013'/Z'0000000000000013', AH=Z'43h'/Z'00000043'/Z'0000000000000043'
 
-=========
--} Disco:
-=========
-Leitura: Mover %ACUMULADOR para 0x38(%BASE) em um loop, realizar operação lógica AND com %ACUMULADOR e valor 0x88, comparar %ACUMULADOR com 0 e pular para o loop se %ACUMULADOR não for zero.
-Escrita: Mover o valor 0x1 para %ACUMULADOR
+2. Mapeamento de Disco:
+INTEGER DISK_MAP16_PTR, DISK_MAP32_PTR, DISK_MAP64_PTR
+COMMON DISK_MAP16_PTR, DISK_MAP32_PTR, DISK_MAP64_PTR
+
+3. Mapeamento de RAM:
+INTEGER MMAP16_PTR, MMAP32_PTR, MMAP64_PTR
+COMMON MMAP16_PTR, MMAP32_PTR, MMAP64_PTR
+MMAP16_PTR = Z'E820h'
+MMAP32_PTR = Z'0000E820'
+MMAP64_PTR = Z'000000000000E820'
+
+-> x86:
 
 ============
 -} Gráficos:
 ============
-! Nota: Todos os dados devem estar em *MAIN_ADDR
 > Requer a chamada de códigos do GUC/SMU/GSP/SOC-GSP, e o código inteiro em um .sys/.ko empacotado com um executor dele.
-
-1. Comandos do GSP (CALL para uso):
-- Padrão de Alocação é o tamanho da memória em bytes, HeapID é "VRAM" e 4096 é o alinhamento em PCs/Consoles.
 
 -> Parâmetros:
 INTEGER SIZE, ALIGN
@@ -229,23 +227,26 @@ PARAMETER (SIZE = 1000000, ALIGN = 4096)
 CHARACTER HEAPID
 PARAMETER (HEAPID = "VRAM")
 
+1. Comandos do GSP (CALL para uso):
+- Padrão de Alocação é o tamanho da memória em bytes, HeapID é "VRAM" e 4096 é o alinhamento em PCs/Consoles.
+
 -] Intel:
-Iniciar: GUC_CMD_GLOBAL_INIT (Antes do Alloc)
-Alocar: GUC_CMD_ALLOC_RESOURCE <SIZE>, <HeapID>, <ALIGN>
-Escrever: GUC_CMD_QUEUE_RING_FLUSH (Após a escrita na memória de vídeo.)
+Iniciar: CALL GUC_CMD_GLOBAL_INIT (Antes do Alloc)
+Alocar: CALL GUC_CMD_ALLOC_RESOURCE <SIZE>, <HeapID>, <ALIGN>
+Escrever: CALL GUC_CMD_QUEUE_RING_FLUSH (Após a escrita na memória de vídeo.)
 --------------------------------------------------------
 -] AMD:
-Iniciar: SMU_CMD_INIT_PM
-Alocar/Escrever: SMU_CMD_ALLOCATE_MEM <SIZE>, <HeapID>, <ALIGN>
+Iniciar: CALL SMU_CMD_INIT_PM
+Alocar/Escrever: CALL SMU_CMD_ALLOCATE_MEM <SIZE>, <HeapID>, <ALIGN>
 ---------------------------------------------------------------
 -] NVidia:
-Iniciar: GSP_CMD_INIT_RM $0x1
-Alocar: GSP_CMD_ALLOC_OBJECT <SIZE>, <HeapID>, <ALIGN>
-Escrever: GSP_CMD_SUBMIT_WORK
+Iniciar: GSP_CMD_INIT_RM Z'1'
+Alocar: CALL GSP_CMD_ALLOC_OBJECT <SIZE>, <HeapID>, <ALIGN>
+Escrever: CALL GSP_CMD_SUBMIT_WORK
 ------------------------------------------------------
 -] SOC-GSP:
-Iniciar: GSP_RESET Z'1', GSP_CLK_CFG Z'0'
-Ler (Requer comparação com zero e loop caso não seja zero): JOB_STATUS
+Iniciar: CALL GSP_RESET Z'1', GSP_CLK_CFG Z'0'
+Ler: JOB_STATUS
 Escrever: JOB_RING_BASE $0x0, JOB_RING_WTPR Z'0'
 ----------------------------------------------------------------------------------------------------------
 2. Elementos Gráficos:
@@ -255,10 +256,11 @@ Escrever: JOB_RING_BASE $0x0, JOB_RING_WTPR Z'0'
 ░ Sombra Leve: Z'B0'
 ----------------------
 3. Células, Valores RGB Indexados e Coordenadas de Posição:
-> Um valor de cor varia de 0 a 255 (Z'00' a Z'FF'), o OFFSET deve estar em *BASE_ADDR, e os dados gráficos da célula em *MAIN_ADDR.
-> Fórmula do OFFSET: Offset da Célula = (Y_Célula * 160 + X_Célula * 3)
+> Um valor de cor varia de 0 a 255 (Z'00' a Z'FF'), o OFFSET e Dados Gráficos devem estar em MMAP16_PTR/MMAP32_PTR/MMAP64_PTR
 
-.section .data
+-> Fórmula do OFFSET: Offset da Célula = (Y_Célula * 160 + X_Célula * 3)
+
+c Sprite:
 R = Z'00' a Z'FF': Nível da Cor Vermelha
 G = Z'00' a Z'FF': Nível da Cor Verde
 B = Z'00' a Z'FF': Nível da Cor Azul
@@ -271,16 +273,21 @@ CELL1_OFFSET = (CELL1_Y * 160 + CELL1_X * 3)
 ========================================================
 -} Áudio (Para efeitos sonoros e músicas no seu código):
 ========================================================
-! Nota: DELTA.PI deve estar em %CONTADOR e Dados de Áudio em %DADOS.
-> Requer "INT 15h/0x15/0x00000015/0x0000000000000015, %ACUMULADOR=E820h/0x0000E820/0x000000000000E820", Delta Pi no Base e chamada de códigos do HDA, além do código de todo o projeto em um arquivo .sys/.ko e seu executor.
+> Requer Delta Pi e Dados do Áudio no MMAP16_PTR/MMAP32_PTR/MMAP64_PTR e chamada de códigos do HDA, além do código de todo o projeto em um arquivo .sys/.ko e seu executor.
+
+INTEGER NID, STREAM_FORMAT, PAYLOAD, ENABLE_OUT
+COMMON NID, STREAM_FORMAT, PAYLOAD, ENABLE_OUT
+NID = Z'06'
+STREAM_FORMAT = Z'200'
+PAYLOAD = Z'441'
+ENABLE_OUT = Z'80'
 
 1. Chamadas de Comandos do HDA (Universal em PCs):
 - Padrôes de formato de stream são NID Z'06', Stream Format Z'200', e Payload Z'441'.
 - Padrões de Ativação do Dispositivo de Áudio são 0x40 para a Saída e 0x80 para o Headphone.
 CALL SET_STREAM_FORMAT <NID> <STREAM_FORMAT> <PAYLOAD>: Define a taxa, bits e canais para 48kHz/16bit/Estéreo no DAC/ADC.
 CALL SET_PIN_WIDGET_CONTROL <NID> <ENABLE_OUT>: Ativa o pino de saída físico (Ex: Headphone) e sua função de saída.
-MOV [DELTA_PI], %BASE
-CALL SET_DMA_RUN_BIT: Aciona o controlador HDA para iniciar o loop de transferência de dados do Ring Buffer para o CODEC.
+CALL SET_DMA_RUN_BIT (MMAP16_PTR/MMAP32_PTR/MMAP64_PTR, DELTA_PI): Aciona o controlador HDA para iniciar o loop de transferência de dados do Ring Buffer para o CODEC.
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 2. Definição de Parâmetros de Áudio, Low/Neg_Max e High/Max:
 PI .double 3.14159265358979323846: Número PI.
@@ -294,7 +301,7 @@ NEG_MAX_AMPLITUDE = -32767: Amplitude Negativa de Bits.
 3. Cálculo da Onda Senoidal:
 
 DOUBLE PRECISION PHASE_ACC = 1
-DELTA_PI: .long 42852281: Incremento de Fase (Frequência * 2^32 / Sample Rate).
+DELTA_PI: (FREQUENCY * 2 * 32 / SAMPLE_RATE).
 
 ==============================
 -} Online (Intel FW e TCP/IP):
