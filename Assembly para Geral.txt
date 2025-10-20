@@ -37,7 +37,7 @@ $: Prefixo usado para denotar que o operando é um valor literal (constante) e n
 *: Usado antes de um operando (registrador ou memória) para indicar que o alvo de um JMP ou CALL é o conteúdo desse operando (o endereço está no registrador/memória).
 .: Endereço Atual/Diretiva
 
-3.2. Sufixos de Tamanho de Byte:
+3.2. Sufixos de Tamanho de Byte para Instruções:
 B: Byte (8 bits).
 W: Word (16 bits).
 L: Long (32 bits).
@@ -96,8 +96,8 @@ JGE: Salto se Maior ou Igual (salto condicional considerando valores com sinal).
 JLE: Salto se Menor ou Igual (salto condicional considerando valores com sinal).
 --------------------------------------------------------------------------------------------------------------------------------
 5. Pilha (Uso: PUSH/POP %reg_ou_mem, CALL rótulo):
-PUSH: Empurra o valor do operando para a pilha, decrementando o ponteiro da pilha (%sp/%esp/%rsp/%r13/%sp/%r1).
-POP: Retira o valor do topo da pilha para o operando destino, incrementando o ponteiro da pilha (%sp/%esp/%rsp/%r13/%sp/%r1).
+PUSH: Empurra o valor do operando para a pilha, decrementando o ponteiro da pilha (%PILHA).
+POP: Retira o valor do topo da pilha para o operando destino, incrementando o ponteiro da pilha (%PILHA).
 CALL: Empurra o endereço da próxima instrução para a pilha e salta para a sub-rotina.
 RET: Retira o endereço do topo da pilha e salta para esse endereço (retorno de sub-rotina).
 IRET:
@@ -192,7 +192,7 @@ ________________________________________________________________________________
 Uso: CALL [Função/Comando] e CMP [hex], 1. Em celulares, CMP [Comando], 1
 
 -> Parâmetros-Chave:
-PRESSED_KEY: .byte 0x00: Deve ser movido para AL
+PRESSED_KEY: .byte 0x00: Deve ser movido para %ACUMULADOR
 ------------------------------------------------------------------------------------------------------------------------------
 -> Computador:
 0x01 - Esc
@@ -338,19 +338,25 @@ ________________________________
 ==========================
 -} Mapeamento de Memória:
 ==========================
-> Usa uma interrupção para ver o mapa de memória, permitindo que você possa escrever no endereço dela.
+> Usa uma interrupção para ver o mapa de memória, permitindo que você possa escrever na RAM.
 
 1. x16:
-INT 15h, %AX=E820h
+INT 15h, %ACUMULADOR=E820h
 ---------------------------------
 
 2. x32:
-INT 0x00000015, %EAX/%R0/%R3/=0x0000E820
+INT 0x00000015, ACUMULADOR=0x0000E820
 -----------------------------------------------------------
 
 3. x64:
-INT 0x0000000000000015, %RAX/%X0/%X4/=0x000000000000E820
+INT 0x0000000000000015, %ACUMULADOR=0x000000000000E820
 ____________________________________________________________________________________________________________
+
+==========
+-} Disco:
+==========
+Leitura: Mover %ACUMULADOR para 0x38(%BASE) em um loop, realizar operação lógica AND com %ACUMULADOR e valor 0x88, comparar %ACUMULADOR com 0 e pular para o loop se %ACUMULADOR não for zero.
+Escrita: Mover o valor 0x1 para %ACUMULADOR
 
 ============
 -} Gráficos:
@@ -364,7 +370,7 @@ ________________________________________________________________________________
 - Padrão de Alocação é o tamanho da memória em bytes, HeapID é VRAM e 4096 é o alinhamento.
 -] Intel:
 Iniciar: GUC_CMD_GLOBAL_INIT
-Alocar: GUC_CMD_ALLOC_RESOURCE <SIZE>, <HeapID>, <ALIGN>
+Alocar: GUC_CMD_ALLOC_RESOURCE <SIE>, <HeapID>, <ALIGN>
 Escrever: GUC_CMD_QUEUE_RING_FLUSH
 ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -380,6 +386,8 @@ Escrever: GSP_CMD_SUBMIT_WORK
 ----------------------------------------------------------------------------------------------------
 
 2. Valores RGB Indexados e Coordenadas de Posição e Desenho para cada Sprite:
+> Um valor de cor varia de 0 a 255 (0x00 a 0xFF).
+
 .section .data
 R .byte 0x00: Nível da Cor Vermelha
 G .byte 0x00: Nível da Cor Verde
@@ -390,272 +398,13 @@ SPRITE1_X .byte 0
 SPRITE1_Y .byte 0
 --------------------------------------------------------
 
-3. Bytes de Cores RGB:
-0 0x00
-1 0x01
-2 0x02
-3 0x03
-4 0x04
-5 0x05
-6 0x06
-7 0x07
-8 0x08
-9 0x09
-10 0x0A
-11 0x0B
-12 0x0C
-13 0x0D
-14 0x0E
-15 0x0F
-16 0x10
-17 0x11
-18 0x12
-19 0x13
-20 0x14
-21 0x15
-22 0x16
-23 0x17
-24 0x18
-25 0x19
-26 0x1A
-27 0x1B
-28 0x1C
-29 0x1D
-30 0x1E
-31 0x1F
-32 0x20
-33 0x21
-34 0x22
-35 0x23
-36 0x24
-37 0x25
-38 0x26
-39 0x27
-40 0x28
-41 0x29
-42 0x2A
-43 0x2B
-44 0x2C
-45 0x2D
-46 0x2E
-47 0x2F
-48 0x30
-49 0x31
-50 0x32
-51 0x33
-52 0x34
-53 0x35
-54 0x36
-55 0x37
-56 0x38
-57 0x39
-58 0x3A
-59 0x3B
-60 0x3C
-61 0x3D
-62 0x3E
-63 0x3F
-64 0x40
-65 0x41
-66 0x42
-67 0x43
-68 0x44
-69 0x45
-70 0x46
-71 0x47
-72 0x48
-73 0x49
-74 0x4A
-75 0x4B
-76 0x4C
-77 0x4D
-78 0x4E
-79 0x4F
-80 0x50
-81 0x51
-82 0x52
-83 0x53
-84 0x54
-85 0x55
-86 0x56
-87 0x57
-88 0x58
-89 0x59
-90 0x5A
-91 0x5B
-92 0x5C
-93 0x5D
-94 0x5E
-95 0x5F
-96 0x60
-97 0x61
-98 0x62
-99 0x63
-100 0x64
-101 0x65
-102 0x66
-103 0x67
-104 0x68
-105 0x69
-106 0x6A
-107 0x6B
-108 0x6C
-109 0x6D
-110 0x6E
-111 0x6F
-112 0x70
-113 0x71
-114 0x72
-115 0x73
-116 0x74
-117 0x75
-118 0x76
-119 0x77
-120 0x78
-121 0x79
-122 0x7A
-123 0x7B
-124 0x7C
-125 0x7D
-126 0x7E
-127 0x7F
-128 0x80
-129 0x81
-130 0x82
-131 0x83
-132 0x84
-133 0x85
-134 0x86
-135 0x87
-136 0x88
-137 0x89
-138 0x8A
-139 0x8B
-140 0x8C
-141 0x8D
-142 0x8E
-143 0x8F
-144 0x90
-145 0x91
-146 0x92
-147 0x93
-148 0x94
-149 0x95
-150 0x96
-151 0x97
-152 0x98
-153 0x99
-154 0x9A
-155 0x9B
-156 0x9C
-157 0x9D
-158 0x9E
-159 0x9F
-160 0xA0
-161 0xA1
-162 0xA2
-163 0xA3
-164 0xA4
-165 0xA5
-166 0xA6
-167 0xA7
-168 0xA8
-169 0xA9
-170 0xAA
-171 0xAB
-172 0xAC
-173 0xAD
-174 0xAE
-175 0xAF
-176 0xB0
-177 0xB1
-178 0xB2
-179 0xB3
-180 0xB4
-181 0xB5
-182 0xB6
-183 0xB7
-184 0xB8
-185 0xB9
-186 0xBA
-187 0xBB
-188 0xBC
-189 0xBD
-190 0xBE
-191 0xBF
-192 0xC0
-193 0xC1
-194 0xC2
-195 0xC3
-196 0xC4
-197 0xC5
-198 0xC6
-199 0xC7
-200 0xC8
-201 0xC9
-202 0xCA
-203 0xCB
-204 0xCC
-205 0xCD
-206 0xCE
-207 0xCF
-208 0xD0
-209 0xD1
-210 0xD2
-211 0xD3
-212 0xD4
-213 0xD5
-214 0xD6
-215 0xD7
-216 0xD8
-217 0xD9
-218 0xDA
-219 0xDB
-220 0xDC
-221 0xDD
-222 0xDE
-223 0xDF
-224 0xE0
-225 0xE1
-226 0xE2
-227 0xE3
-228 0xE4
-229 0xE5
-230 0xE6
-231 0xE7
-232 0xE8
-233 0xE9
-234 0xEA
-235 0xEB
-236 0xEC
-237 0xED
-238 0xEE
-239 0xEF
-240 0xF0
-241 0xF1
-242 0xF2
-243 0xF3
-244 0xF4
-245 0xF5
-246 0xF6
-247 0xF7
-248 0xF8
-249 0xF9
-250 0xFA
-251 0xFB
-252 0xFC
-253 0xFD
-254 0xFE
-255 0xFF
-_______________________________________________________________________________________________________________
+____________________________________________________________________________________________________________________________________________________________________________________________________________________
 
 ========================================================
 -} Áudio (Para efeitos sonoros e músicas no seu código):
 ========================================================
-! Nota: Todos os dados devem estar em %BX/%EBX/%RBX/%R1/%X1/%R4.
-
--] Windows e Linux:
-> Requer "INT 15h/0x15/0x00000015/0x0000000000000015, %AX/%EAX/%RAX/%R0/%X0/%R3/=E820h/0x0000E820/0x000000000000E820", Delta Pi no Base e chamada de códigos do HDA, além do código de todo o projeto em um arquivo .sys/.ko e seu executor.
+! Nota: Todos os dados devem estar em %BASE.
+> Requer "INT 15h/0x15/0x00000015/0x0000000000000015, %ACUMULADOR=E820h/0x0000E820/0x000000000000E820", Delta Pi no Base e chamada de códigos do HDA, além do código de todo o projeto em um arquivo .sys/.ko e seu executor.
 
 1. Chamadas de Comandos do HDA (Universal em PCs):
 - Padrôes de formato de stream são NID 0x06, Stream Format 0x200, e Payload 0x441.
@@ -687,55 +436,55 @@ ________________________________________________________________________________
 -} Online (Intel FW e TCP/IP):
 ==========================
 1. Comandos do Firmware de Rede Intel:
-CTRL 0x0000: Controle Geral do Chip (Reset, Enable/Disable)
-STATUS 0x0008: Status Geral do Link (Link Up/Down)
-EERD 0x0014: Leitura da EEPROM/NVM (para ler o MAC)
-IMC 0x00D0: Máscara de Interrupção (para ignorar/habilitar interrupções)
-RCTL 0x0100: Controle de Recepção
-RAL/RAH 0x5400/0x5404: Endereço MAC (Lower/Upper 32 bits)
-RDBAL/RDBAH 0x2800/0x2804: Endereço Base do Anel de Descritores Rx (Lower/Upper)
-RDLEN 0x2808: Tamanho do Anel de Descritores Rx
+CTRL $0x0000: Controle Geral do Chip (Reset, Enable/Disable)
+STATUS $0x0008: Status Geral do Link (Link Up/Down)
+EERD $0x0014: Leitura da EEPROM/NVM (para ler o MAC)
+IMC $0x00D0: Máscara de Interrupção (para ignorar/habilitar interrupções)
+RCTL $0x0100: Controle de Recepção
+RAL/RAH $0x5400/0x5404: Endereço MAC (Lower/Upper 32 bits)
+RDBAL/RDBAH $0x2800/0x2804: Endereço Base do Anel de Descritores Rx (Lower/Upper)
+RDLEN $0x2808: Tamanho do Anel de Descritores Rx
 RDH/RDT 0x2810/0x2818: Cabeça (Head) e Cauda (Tail) do Anel Rx
-TCTL 0x0400: Controle de Transmissão
-TDBAL/TDBAH 0x3800/0x3804: Endereço Base do Anel de Descritores Tx
-TDLEN 0x3808: Tamanho do Anel de Descritores Tx
-TDH/TDT 0x3810/0x3818: Cabeça (Head) e Cauda (Tail) do Anel Tx
+TCTL $0x0400: Controle de Transmissão
+TDBAL/TDBAH $0x3800/0x3804: Endereço Base do Anel de Descritores Tx
+TDLEN $0x3808: Tamanho do Anel de Descritores Tx
+TDH/TDT $0x3810/0x3818: Cabeça (Head) e Cauda (Tail) do Anel Tx
 ----------------------------------------------------------------------------------------------------------------------------------------------
 2. Parâmetros do TCP/IP:
 
 2.1. Frame Ethernet 
 MAC_DESTINY 0x00: Endereço MAC do próximo dispositivo na rede (roteador ou host final). (Variável)
 MAC_ORIGIN 0x06: Seu endereço MAC. (Variável). (Este é o MAC lido do NIC da Intel).
-ETHERTYPE <0x0C> (12): Identifica o protocolo da Camada 3. (Padrão/Fixo):0x0800 para IPv4, 0x0806 para ARP.
-PAYLOAD <0x0E> (14): O Cabeçalho IP começa aqui.
+ETHERTYPE $0x0C: Identifica o protocolo da Camada 3. (Padrão/Fixo):0x0800 para IPv4, 0x0806 para ARP.
+PAYLOAD $0x0E: O Cabeçalho IP começa aqui.
 CRC (Checksum de Frame): Este campo é gerado e anexado AUTOMATICAMENTE pelo controlador Intel no momento da transmissão.
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 2.2. Cabeçalho IPv4:
-VERSION_IHL <0x00>: Geralmente 0x45. (Versão 4, IHL 5 - 20 bytes).
-PROTOCOL <0x09>: 0x06 (para TCP) ou 0x11 (para UDP).
-CHKSUM_HEADER <0x0A>: O campo que você deve calcular em bare-metal, usando o algoritmo de Soma Complementar de Um.
-IP_ORIGIN <0x0C>: Seu Endereço IP. (Variável).
-IP_DESTINY <0x10>: Endereço IP do host de destino. (Variável).
+VERSION_IHL $0x00>: Geralmente 0x45. (Versão 4, IHL 5 - 20 bytes).
+PROTOCOL <$0x09>: 0x06 (para TCP) ou 0x11 (para UDP).
+CHKSUM_HEADER 0x0A: O campo que você deve calcular em bare-metal, usando o algoritmo de Soma Complementar de Um.
+IP_ORIGIN 0x0C: Seu Endereço IP. (Variável).
+IP_DESTINY 0x10: Endereço IP do host de destino. (Variável).
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 2.3. Cabecalho TCP:
-PORT_ORIGIN <0x00>: Sua porta (aplicação/serviço local).
-PORT_DESTINY <0x02>: Porta do serviço remoto (ex: 80, 443).
-SEQUENCE <0x04>: Posição do primeiro byte de dados do segmento.
+PORT_ORIGIN $0x00>: Sua porta (aplicação/serviço local).
+PORT_DESTINY $0x02: Porta do serviço remoto (ex: 80, 443).
+SEQUENCE $0x04: Posição do primeiro byte de dados do segmento.
 ACK (Reconhecimento) <0x08>: Próximo número de sequência esperado do lado remoto.
-RES_FLAGS <0x0C>: Contém o Data Offset e os Control Flags.
-WINDOW_SIZE <0x0E>: Controle de fluxo (Buffer de recepção disponível).
-CHKSUM <0x10>: Resultado do cálculo do Pseudo-Cabeçalho + TCP + Dados.
-URGENCY_POINT <0x12>: Ponto de Urgência Fixo (Geralmente 0x0000).
-OPT_FILL <0x14>: Usado se o Data Offset for maior que 5.
-SYN (Início): <0x02>
-SYN-ACK (Resposta): 0x12 (0x10 ACK + 0x02 SYN)
-ACKS (Reconhecimento): 0x10
-PSH-ACK (Enviar Dados): 0x18 (0x08 PSH + 0x10 ACK)
-FIN-ACK (Encerrar): 0x11 (0x01 FIN + 0x10 ACK)
-RST (Resetar): 0x04
+RES_FLAGS $0x0C$: Contém o Data Offset e os Control Flags.
+WINDOW_SIZE $0x0E: Controle de fluxo (Buffer de recepção disponível).
+CHKSUM $0x10: Resultado do cálculo do Pseudo-Cabeçalho + TCP + Dados.
+URGENCY_POINT $0x12: Ponto de Urgência Fixo (Geralmente 0x0000).
+OPT_FILL $0x14: Usado se o Data Offset for maior que 5.
+SYN (Início): $0x02
+SYN-ACK (Resposta): $0x12 (0x10 ACK + 0x02 SYN)
+SIM-ACK (Reconhecimento): $0x10
+PSH-ACK (Enviar Dados): $0x18 (0x08 PSH + 0x10 ACK)
+FIN-ACK (Encerrar): $0x11 (0x01 FIN + 0x10 ACK)
+RST (Resetar): $0x04
 
 3. APIC:
 Configuração da APIC: Sequências de OUTs e MOVs para os endereços do Firmware de Rede Intel.
 Rotina de Serviço: Salvar Contexto, Ler e Escrever nos pacotes do NIC, e restaurar.
 Loops: Loop de Jumps entre as tarefas.
-________________________________________________________________________________________________________________________________
+__________________________________________________________________________________________________
