@@ -52,7 +52,6 @@ T: Ten bytes (80 bits).
 .size: Define o tamanho do símbolo.
 .set: Atribui o valor de uma expressão a um símbolo.
 ______________________________________________________________________________________________________________________________________________________________________
-
 ==============
 -> Instruções:
 ==============
@@ -107,12 +106,25 @@ INT: Executa uma interrupção.
 IN: Envia um sinal de entrada.
 OUT: Envia um sinal de saída.
 ________________________________________________________________________________________________________________________________________________________________________________
+=============================================================
+-} SystemV ABI (Para Interações com Código C Externo e Bibliotecas):
+=============================================================
+1. SystemV ABI x32:
+Retorno: %ACUMULADOR.
+Callee-Saved (Preservados na Chamada): %BASE, %FONTE, %DESTINO, %PILHA.
+Caller-Saved (Preservados na Função): %ACUMULADOR, %CONTADOR, %DADOS.
 
+2. SystemV ABI x64:
+Retorno: %ACUMULADOR
+Callee-Saved (Preservados na Chamada): %BASE, %BÔNUS, %PILHA, %R12-15.
+Caller-Saved (Preservados na Função): %ACUMULADOR, %CONTADOR, %DADOS, %FONTE, %DESTINO, %R8-R11.
+________________________________________________________________________________________________________________
 ====================================================
 -> Registradores (x86, ARM e PowerPC):
 ====================================================
 1. x86:
 -] 8-bit:
+-----------
 AL: Acumulador Baixo/Low
 AH: Acumulador Alto/High
 BL: Base Baixa/Low
@@ -121,32 +133,44 @@ CL: Contador Baixo/Low
 CH: Contador Alto/High
 DL: Dados Baixos/Low
 DH: Dados Altos/High
---------------------------------------
+-------------------------------------------
 -] 16-bit:
+-------------
+1. Caller-Saved (Registrador):
 AX: Accumulator Register (Registrador Acumulador)
 BX: Base Register (Registrador Base)
 CX: Counter Register (Registrador Contador)
 DX: Data Register (Registrador de Dados)
+----------------------------------------------------------------------------------
+2. Callee-Saved (Chamada):
 DI: Destination Index (Índice de Destino)
 SI: Source Index (Índice de Fonte)
 BP: Base Pointer (Ponteiro Base)
 SP: Stack Pointer (Ponteiro de Pilha)
-------------------------------------------------------------------------------------
--] 32-bit (E Significa Estendido/Extended):
+----------------------------------------------------------------
+-] 32-bit:
+-------------
+1. Caller-Saved (Registrador):
 EAX: Extended Accumulator Register
 EBX: Extended Base Register
 ECX: Extended Counter Register
 EDX: Extended Data Register
+------------------------------------------------------------
+2. Callee-Saved (Chamada):
 EDI: Extended Destination Index
 ESI: Extended Source Index
 EBP: Extended Base Pointer
 ESP: Extended Stack Pointer
 ------------------------------------------------------------------
 -] 64-bit:
+-------------
+1. Caller-Saved (Registrador):
 RAX: Register Accumulator
 RBX: Register Base
 RCX: Register Counter
 RDX: Register Data
+------------------------------------------------------------
+2. Callee-Saved (Chamada):
 RDI: Register Destination Index
 RSI: Register Source Index
 RBP: Register Base Pointer
@@ -156,15 +180,19 @@ R10 - R15: Registradores Gerais
 --------------------------------------------------------------------------------------------------
 2. ARMv7/v8 (x32, x64):
 -] 32-bit:
+-------------
+1. Caller-Saved (Registrador/Função):
 R0: Argumento 1 / Valor de Retorno
 R1: Argumento 2
 R2: Argumento 3
 R3: Argumento 4
+------------------------------------------------------------
+2. Callee-Saved (Chamada):
 R4: Variável Local (Preservado pela Chamada)
 R11: Frame Pointer (Ponteiro de Frame) / Variável Local
 R13: Stack Pointer (SP)
 R14: Link Register (LR) (Endereço de Retorno da Função)
---------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------
 -] 64-bit:
 X0: Argumento de Função
 X19: Variável Local
@@ -176,24 +204,26 @@ SP: Stack Pointer
 X29: Frame Pointer
 -------------------------------------------
 3. PowerPC (x32, x64)
-R1: Stack Pointer (Ponteiro de Pilha)
+1. Caller-Saved (Registrador):
 R3: Argumento 1 / Valor de Retorno
 R4: Argumento 2
 R5: Argumento 3
 R6: Argumento 4
 R7: Argumento 5
+---------------------------------------------------------
+2. Callee-Saved (Chamada):
+R1: Stack Pointer (Ponteiro de Pilha)
 R14: Volátil (Variável Temporária)
 R30 - R31: Variáveis Locais (Preservados pela Chamada)
 ______________________________________________________________________________________________________________________________________________________________________
-
 =======================================================================
 -} Entrada (Para suporte de controles do Computador, Celular e Console)
 =======================================================================
 Uso: CALL [Função/Comando] e CMP [hex], 1. Em celulares, CMP [Comando], 1
-
+-----------------------------------------------------------------------------------------------------------------------------
 -> Parâmetros-Chave:
 PRESSED_KEY: .byte 0x00: Deve ser movido para %ACUMULADOR
-------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------
 -> Computador:
 0x01 - Esc
 0x02 - 1
@@ -289,7 +319,6 @@ I2C_WRITE_BYTE (REG_ADDR): Enviar o endereço do registrador interno do TCIC (ex
 I2C_READ_BYTE (ACK/NACK): Ler 8 bits do TCIC. Receber o Status, a Posição, ou o valor de Pressão.
 I2C_STOP_TRANSMISSION: Gerar a condição STOP (SDA HIGH, SCL HIGH). Finalizar a transação.
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
 -] Consoles:
 1. PlayStation:
 Cima: 0x00
@@ -315,7 +344,6 @@ LEFT_STICK_Y (0x0000 a 0xFFFF): .short 0x0000
 RIGHT_STICK_X (0x0000 a 0xFFFF): .short 0x0000
 RIGHT_STICK_Y (0x0000 a 0xFFFF): .short 0x0000
 --------------------------------------------------------------------------------
-
 2. Xbox:
 D-Pad Cima: 0x01
 D-Pad Baixo: 0x02
@@ -334,7 +362,6 @@ RB: 0x0A
 LT (0x00 a 0xFF): .byte 0x00
 RT (0x00 a 0xFF): .byte 0x00
 ________________________________
-
 ==========================
 -} Mapeamento de Memória:
 ==========================
@@ -343,22 +370,18 @@ ________________________________
 1. x16:
 INT 15h, %ACUMULADOR=E820h
 ---------------------------------
-
 2. x32:
 INT 0x00000015, ACUMULADOR=0x0000E820
 -----------------------------------------------------------
-
 3. x64:
 INT 0x0000000000000015, %ACUMULADOR=0x000000000000E820
 ____________________________________________________________________________________________________________
-
 ==========
 -} Disco:
 ==========
 Leitura: Mover %ACUMULADOR para 0x38(%BASE) em um loop, realizar operação lógica AND com %ACUMULADOR e valor 0x88, comparar %ACUMULADOR com 0 e pular para o loop se %ACUMULADOR não for zero.
 Escrita: Mover o valor 0x1 para %ACUMULADOR
 ______________________________________________________________________________________________________________________________________________________________________________________________________________________
-
 ============
 -} Gráficos:
 ============
@@ -370,21 +393,18 @@ ________________________________________________________________________________
 
 -] Intel:
 Iniciar: GUC_CMD_GLOBAL_INIT
-Alocar: GUC_CMD_ALLOC_RESOURCE <SIE>, <HeapID>, <ALIGN>
+Alocar: GUC_CMD_ALLOC_RESOURCE <SIZE>, <HeapID>, <ALIGN>
 Escrever: GUC_CMD_QUEUE_RING_FLUSH
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
 -] AMD:
 Iniciar: SMU_CMD_INIT_PM
 Alocar/Escrever: SMU_CMD_ALLOCATE_MEM <SIZE>, <HeapID>, <ALIGN>
 ---------------------------------------------------------------------------------------------------------------------
-
 -] NVidia:
 Iniciar: GSP_CMD_INIT_RM
 Alocar: GSP_CMD_ALLOC_OBJECT <SIZE>, <HeapID>, <ALIGN>
 Escrever: GSP_CMD_SUBMIT_WORK
 ----------------------------------------------------------------------------------------------------
-
 -] SOC-GSP:
 Iniciar: GSP_RESET $0x1, GSP_CLK_CFG $0x0
 Ler (Requer comparação com zero e loop caso não seja zero): JOB_STATUS
@@ -402,7 +422,6 @@ SPRITE1_Y_POS .byte 0
 SPRITE1_X .byte 0
 SPRITE1_Y .byte 0
 ____________________________________________________________________________________________________________________________________________________________________________________________________________________
-
 ========================================================
 -} Áudio (Para efeitos sonoros e músicas no seu código):
 ========================================================
@@ -417,7 +436,6 @@ CALL SET_PIN_WIDGET_CONTROL <NID> <ENABLE_OUT>: Ativa o pino de saída físico (
 MOV [DELTA_PI], %BX/%EBX/RBX/%R1/%X1/%R4
 CALL SET_DMA_RUN_BIT: Aciona o controlador HDA para iniciar o loop de transferência de dados do Ring Buffer para o CODEC.
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
 2. Definição de Parâmetros de Áudio, Low/Neg_Max e High/Max:
 PI .double 3.14159265358979323846: Número PI.
 SAMPLE_RATE .equ 44100: Frequência de amostragem (Fs).
@@ -427,14 +445,12 @@ BITS_PER_SAMPLE .byte 16: Profundidade de bits.
 MAX_AMPLITUDE .short 32767: Amplitude de Bits.
 NEG_MAX_AMPLITUDE .short -32767: Amplitude Negativa de Bits.
 ----------------------------------------------------------------------------------------------------------
-
 3. Cálculo da Onda Senoidal:
 
 .section .bss
 PHASE_ACC: resd 1: DoubleWord reservado para o Acumulador de Fase.
 DELTA_PI: .long 42852281: Incremento de Fase (Frequência * 2^32 / Sample Rate).
 __________________________________________________________________________________
-
 ==========================
 -} Online (Intel FW e TCP/IP):
 ==========================
