@@ -27,8 +27,7 @@
 .lcomm: Reserva espaço na seção .bss (dados não inicializados).
 -----------------------------------------------------------------------------------------------------------------
 3. Prefixos, Símbolos e Sufixos:
-
-3.1. Prefixos:
+> Prefixos:
 $: Prefixo usado para denotar que o operando é um valor literal (constante) e não um endereço de memória ou um registrador.
 %: Prefixo usado antes do nome de um registrador para identificá-lo explicitamente. (Ex: %rax, %rsp, %rdi).
 (): Indica que o valor entre parênteses é um endereço de memória cujo conteúdo deve ser acessado.
@@ -37,14 +36,13 @@ $: Prefixo usado para denotar que o operando é um valor literal (constante) e n
 *: Usado antes de um operando (registrador ou memória) para indicar que o alvo de um JMP ou CALL é o conteúdo desse operando (o endereço está no registrador/memória).
 .: Endereço Atual/Diretiva
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-3.2. Sufixos de Tamanho de Byte para Instruções:
+> Sufixos de Tamanho de Byte para Instruções:
 B: Byte (8 bits).
 W: Word (16 bits).
 L: Long (32 bits).
 Q: Quadword (64 bits).
 T: Ten bytes (80 bits).
 ------------------------------------------------
-
 4. Símbolos:
 .globl ou .global: Torna o símbolo visível para outros arquivos objeto (exporta a função ou variável). Essencial para a função de entrada principal.
 .local: Torna o símbolo visível apenas dentro do arquivo atual.
@@ -58,19 +56,19 @@ ________________________________________________________________________________
 1. Aritmética (Uso: ADD/SUB %r1, %r2, IMUL/IDIV/DEC/NEG %r1, %r2):
 ADD: Soma o primeiro operando ao segundo operando, armazenando no segundo.
 SUB: Subtrai o primeiro operando do segundo operando, armazenando no segundo.
-IMUL: Multiplica os operandos; o resultado pode ser armazenado em um operando ou implicitamente em %ax:%dx/%eax:%edx/%rax:%rdx/%r0:%r3/%x0:%x3/%r0:%r3.
-IDIV: Divide o valor em %dx:%ax/%edx:%eax/%rdx:%rax/%r3:%r0/%x3:%x0/%r3:%r0 pelo operando; armazena o quociente em RAX e o resto em RDX.
+IMUL: Multiplica os operandos; o resultado pode ser armazenado em um operando ou implicitamente em %ACUMULADOR:%DADOS.
+IDIV: Divide o valor em %DADOS:%ACUMULADOR pelo operando; armazena o quociente em RAX e o resto em RDX.
 INC: Incrementa o operando em 1.
 DEC: Decrementa o operando em 1.
 NEG: Nega o valor do operando (converte para o complemento de dois).
---------------------------------------------------------------------------------------------------------------------------------------------------------
-2. Manipulação de Dados/Memória (Uso: Instrução %r1, %r2):
+----------------------------------------------------------------------------------------------------------------------
+2. Manipulação de Dados/Memória (Uso: Instrução %reg1, %reg2):
 MOV: Move o valor do primeiro operando (fonte) para o segundo operando (destino).
 LEA: Calcula o endereço efetivo do primeiro operando e o move para o segundo operando (destino).
 LOAD: Calcula um endereço do primeiro operando e move para o segundo operando.
 STORE: Armazena um dado de um operando na memória.
 ------------------------------------------------------------------------------------------------
-3. Instruções Lógicas e de Manipulação de Bits (Uso: Operação %r1, %r2, nas deslocações, Instrução $valor, %r1):
+3. Instruções Lógicas e de Manipulação de Bits (Uso: Operação %r1, %r2, nas deslocações, Instrução $valor, %reg):
 AND: Realiza a operação AND bit a bit entre os operandos.
 OR: Realiza a operação OR bit a bit entre os operandos.
 XOR: Realiza a operação XOR bit a bit entre os operandos.
@@ -101,7 +99,7 @@ CALL: Empurra o endereço da próxima instrução para a pilha e salta para a su
 RET: Retira o endereço do topo da pilha e salta para esse endereço (retorno de sub-rotina).
 IRET:
 ---------------------------------------------------------------------------------------------------------
-6. I/O (Uso: INT $1, %ax/%eax/%rax/%r0/%x0/%r3):
+6. I/O (Uso: INT $1, %ACUMULADOR):
 INT: Executa uma interrupção.
 IN: Envia um sinal de entrada.
 OUT: Envia um sinal de saída.
@@ -215,7 +213,7 @@ R7: Argumento 5
 R1: Stack Pointer (Ponteiro de Pilha)
 R14: Volátil (Variável Temporária)
 R30 - R31: Variáveis Locais (Preservados pela Chamada)
-______________________________________________________
+
 ========================================================================
 -} Entrada (Para suporte de controles do Computador, Celular e Console):
 ========================================================================
@@ -361,7 +359,7 @@ LB: 0x09
 RB: 0x0A
 LT (0x00 a 0xFF): .byte 0x00
 RT (0x00 a 0xFF): .byte 0x00
-________________________________
+
 ==========================
 -} Mapeamento de Memória:
 ==========================
@@ -371,17 +369,17 @@ ________________________________
 INT 15h, %ACUMULADOR=E820h
 --------------------------
 2. x32:
-INT 0x00000015, ACUMULADOR=0x0000E820
+INT 0x00000015, %ACUMULADOR=0x0000E820
 -------------------------------------
 3. x64:
 INT 0x0000000000000015, %ACUMULADOR=0x000000000000E820
-_______________________________________________________
+
 =========
 -} Disco:
 ==========
 Leitura: Mover %ACUMULADOR para 0x38(%BASE) em um loop, realizar operação lógica AND com %ACUMULADOR e valor 0x88, comparar %ACUMULADOR com 0 e pular para o loop se %ACUMULADOR não for zero.
 Escrita: Mover o valor 0x1 para %ACUMULADOR
-______________________________________________________________________________________________________________________________________________________________________________________________
+
 ============
 -} Gráficos:
 ============
@@ -392,9 +390,9 @@ ________________________________________________________________________________
 - Padrão de Alocação é o tamanho da memória em bytes, HeapID é VRAM e 4096 é o alinhamento em PCs/Consoles.
 
 -] Intel:
-Iniciar: GUC_CMD_GLOBAL_INIT
+Iniciar: GUC_CMD_GLOBAL_INIT (Antes do Alloc)
 Alocar: GUC_CMD_ALLOC_RESOURCE <SIZE>, <HeapID>, <ALIGN>
-Escrever: GUC_CMD_QUEUE_RING_FLUSH
+Escrever: GUC_CMD_QUEUE_RING_FLUSH (Após a escrita na memória de vídeo.)
 --------------------------------------------------------
 -] AMD:
 Iniciar: SMU_CMD_INIT_PM
@@ -411,8 +409,8 @@ Ler (Requer comparação com zero e loop caso não seja zero): JOB_STATUS
 Escrever: JOB_RING_BASE $0x0, JOB_RING_WTPR $0x0
 
 2. Células, Valores RGB Indexados e Coordenadas de Posição:
-> Um valor de cor varia de 0 a 255 (0x00 a 0xFF), tudo deverá estar adicionado em %ACUMULADOR (Usando MOV-ADD-MOV) e um offset da célula deve ser defindo antes da escrita na memória de vídeo.
-> Fórmula do OFFSET: Offset da Célula} = (Y_Célula * 128 + X_Célula)
+> Um valor de cor varia de 0 a 255 (0x00 a 0xFF), o OFFSET deve estar em %BASE, e os dados gráficos da célula em %ACUMULADOR.
+> Fórmula do OFFSET: Offset da Célula = (Y_Célula * 128 + X_Célula * 3)
 
 .section .data
 R .byte 0x00: Nível da Cor Vermelha
@@ -420,14 +418,14 @@ G .byte 0x00: Nível da Cor Verde
 B .byte 0x00: Nível da Cor Azul
 RESOLUTION $128
 CELL1 .ascii [desenho]
-CELL1_OFFSET (CELL1_Y * 128 * CELL1_X)
+CELL1_OFFSET (CELL1_Y * 128 + CELL1_X * 3)
 CELL1_X 10
 CELL1_Y 20
-_______________________________________________________________________________________________________________________________________________________________________________________________
+
 ========================================================
 -} Áudio (Para efeitos sonoros e músicas no seu código):
 ========================================================
-! Nota: Todos os dados devem estar em %BASE.
+! Nota: DELTA.PI deve estar em %CONTADOR e Dados de Áudio em %DADOS.
 > Requer "INT 15h/0x15/0x00000015/0x0000000000000015, %ACUMULADOR=E820h/0x0000E820/0x000000000000E820", Delta Pi no Base e chamada de códigos do HDA, além do código de todo o projeto em um arquivo .sys/.ko e seu executor.
 
 1. Chamadas de Comandos do HDA (Universal em PCs):
@@ -452,7 +450,7 @@ NEG_MAX_AMPLITUDE .short -32767: Amplitude Negativa de Bits.
 .section .bss
 PHASE_ACC: resd 1: DoubleWord reservado para o Acumulador de Fase.
 DELTA_PI: .long 42852281: Incremento de Fase (Frequência * 2^32 / Sample Rate).
-_______________________________________________________________________________
+
 ==============================
 -} Online (Intel FW e TCP/IP):
 =============================
@@ -488,11 +486,11 @@ IP_ORIGIN 0x0C: Seu Endereço IP. (Variável).
 IP_DESTINY 0x10: Endereço IP do host de destino. (Variável).
 ----------------------------------------------------------------------------------------------------------------
 2.3. Cabecalho TCP:
-PORT_ORIGIN $0x00>: Sua porta (aplicação/serviço local).
+PORT_ORIGIN $0x00: Sua porta (aplicação/serviço local).
 PORT_DESTINY $0x02: Porta do serviço remoto (ex: 80, 443).
 SEQUENCE $0x04: Posição do primeiro byte de dados do segmento.
-ACK (Reconhecimento) <0x08>: Próximo número de sequência esperado do lado remoto.
-RES_FLAGS $0x0C$: Contém o Data Offset e os Control Flags.
+ACK (Reconhecimento) 0x08: Próximo número de sequência esperado do lado remoto.
+RES_FLAGS $0x0C: Contém o Data Offset e os Control Flags.
 WINDOW_SIZE $0x0E: Controle de fluxo (Buffer de recepção disponível).
 CHKSUM $0x10: Resultado do cálculo do Pseudo-Cabeçalho + TCP + Dados.
 URGENCY_POINT $0x12: Ponto de Urgência Fixo (Geralmente 0x0000).
