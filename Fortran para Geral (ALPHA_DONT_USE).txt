@@ -48,58 +48,6 @@ UNIT: Argumento que especifica um número para o canal de I/O.
 FORMAT: Especifica o layout da entrada ou saída formatada.
 STOP: Encerra a execução do programa de forma normal.
 
-
-
-========================================================================================================================
--} Fortran 77 para Geral (Regras, Operadores, Palavras-Chave, Mapeamento de Memória, Entrada, Gráficos, Áudio e Online):
-========================================================================================================================
-Regras do Formato Fixo do Fortran 77:
-Coluna 1, Regra: Se a coluna 1 contiver um C, um * (asterisco), ou um D (dependendo do compilador), a linha inteira é tratada como um comentário e ignorada."
-Colunas 1 a 5, Regra: Espaço reservado para números inteiros (rótulos) de 1 a 5 dígitos. Esses rótulos são usados por instruções como GO TO, DO, READ e WRITE (para referenciar instruções FORMAT). O número não precisa estar justificado à direita.
-Coluna 6, Regra: Se uma instrução for muito longa para caber na coluna 72, a próxima linha é uma continuação se a coluna 6 contiver qualquer caractere que não seja um espaço ou 0 (zero). O + ou um número sequencial eram populares.
-Colunas 7 a 72, Regra: Aqui é onde o código real reside (declarações, instruções executáveis). Importante: Os espaços em branco são geralmente ignorados pelo Fortran 77 (com exceção de strings de caracteres). Por exemplo, I N T E G E R é lido como INTEGER.
-Colunas 73 a 80, Regra: Essas colunas são ignoradas pelo compilador. Elas eram usadas para armazenar números de sequência em cartões perfurados para ajudar na classificação, caso os cartões fossem misturados.
-
-==============
--> Operadores:
-==============
-.AND., .OR., .NOT., .EQ., .NE., .LT., .LE., .GT., .GE.: Operadores Lógicos Bit-a-Bit e de Salto
-
-==================
--> Palavras-Chave:
-==================
-PROGRAM: Inicia o programa principal.
-ENDPROGRAM: Finaliza o programa principal.
-INTEGER: Declara uma variável como número inteiro.
-REAL: Declara uma variável como número de ponto flutuante (precisão simples).
-DOUBLE PRECISION: Tipos,Declara uma variável de ponto flutuante de precisão dupla.
-COMPLEX: Declara uma variável como número complexo.
-LOGICAL: Declara uma variável booleana (.TRUE. ou .FALSE.).
-CHARACTER: Declara uma variável de string (e.g., CHARACTER(LEN=20)).
-DIMENSION: Declara o rank e os limites de um array.
-PARAMETER: Declara uma constante simbólica.
-FUNCTION: Inicia a definição de uma função (retorna um valor).
-SUBROUTINE: Inicia a definição de uma sub-rotina (não retorna valor por nome).
-CALL: Invoca/executa uma sub-rotina.
-CONTAINS: Separa o código principal de procedimentos internos (FUNCTION ou SUBROUTINE).
-RETURN: Sai de uma função ou sub-rotina.
-IF: Inicia uma estrutura condicional.
-THEN: Usado após a condição IF.
-ELSE: Bloco de código executado se a condição IF for falsa.
-ELSE IF Bloco de código para uma condição alternativa.
-ENDIF: Finaliza a estrutura condicional IF.
-DO: Inicia um loop (iteração).
-ENDDO: Finaliza o loop DO.
-CYCLE: Pula para a próxima iteração do loop DO.
-EXIT: Sai imediatamente de um loop DO.
-READ: Comando de entrada de dados (e.g., do teclado ou arquivo).
-WRITE: Comando de saída de dados (e.g., para tela ou arquivo).
-OPEN: Abre um arquivo para I/O.
-CLOSE: Fecha um arquivo aberto.
-UNIT: Argumento que especifica um número para o canal de I/O.
-FORMAT: Especifica o layout da entrada ou saída formatada.
-STOP: Encerra a execução do programa de forma normal.
-
 ========================================================================
 -} Entrada (Para suporte de controles do Computador, Celular e Console):
 ========================================================================
