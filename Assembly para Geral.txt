@@ -385,7 +385,7 @@ ________________________________________________________________________________
 ============
 -} Gráficos:
 ============
-! Nota: Todos os dados devem estar em %BASE.
+! Nota: Todos os dados devem estar em %BASE
 > Requer a chamada de códigos do GUC/SMU/GSP/SOC-GSP, e o código inteiro em um .sys/.ko empacotado com um executor dele.
 
 1. Comandos do GSP (CALL para uso):
@@ -410,17 +410,16 @@ Iniciar: GSP_RESET $0x1, GSP_CLK_CFG $0x0
 Ler (Requer comparação com zero e loop caso não seja zero): JOB_STATUS
 Escrever: JOB_RING_BASE $0x0, JOB_RING_WTPR $0x0
 
-2. Valores RGB Indexados e Coordenadas de Posição e Desenho para cada Sprite:
-> Um valor de cor varia de 0 a 255 (0x00 a 0xFF), e os valores X e Y de cada sprite devem ser multiplicados antes da escrita na memória de vídeo.
+2. Células, Valores RGB Indexados e Coordenadas de Posição:
+> Um valor de cor varia de 0 a 255 (0x00 a 0xFF), e um offset da célula deve ser defindo antes da escrita na memória de vídeo.
+> Fórmula do OFFSET: Offset da Célula} = (Y_Célula * 128 + X_Célula)
 
 .section .data
 R .byte 0x00: Nível da Cor Vermelha
 G .byte 0x00: Nível da Cor Verde
 B .byte 0x00: Nível da Cor Azul
-SPRITE1_X_POS .byte 0
-SPRITE1_Y_POS .byte 0
-SPRITE1_X .byte 0
-SPRITE1_Y .byte 0
+CELL1 .ascii [desenho]
+CELL1_OFFSET (20 * 128 * 10)
 ____________________________________________________________________________________________________________________________________________________________________________________________________________________
 ========================================================
 -} Áudio (Para efeitos sonoros e músicas no seu código):
