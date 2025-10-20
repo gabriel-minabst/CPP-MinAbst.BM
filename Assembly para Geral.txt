@@ -395,23 +395,23 @@ ________________________________________________________________________________
 Iniciar: GUC_CMD_GLOBAL_INIT
 Alocar: GUC_CMD_ALLOC_RESOURCE <SIZE>, <HeapID>, <ALIGN>
 Escrever: GUC_CMD_QUEUE_RING_FLUSH
-------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------
 -] AMD:
 Iniciar: SMU_CMD_INIT_PM
 Alocar/Escrever: SMU_CMD_ALLOCATE_MEM <SIZE>, <HeapID>, <ALIGN>
----------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------
 -] NVidia:
 Iniciar: GSP_CMD_INIT_RM $0x1
 Alocar: GSP_CMD_ALLOC_OBJECT <SIZE>, <HeapID>, <ALIGN>
 Escrever: GSP_CMD_SUBMIT_WORK
-----------------------------------------------------------------------------------------------------
+------------------------------------------------------
 -] SOC-GSP:
 Iniciar: GSP_RESET $0x1, GSP_CLK_CFG $0x0
 Ler (Requer comparação com zero e loop caso não seja zero): JOB_STATUS
 Escrever: JOB_RING_BASE $0x0, JOB_RING_WTPR $0x0
 
 2. Células, Valores RGB Indexados e Coordenadas de Posição:
-> Um valor de cor varia de 0 a 255 (0x00 a 0xFF), tudo deverá estar adicionado em %ACUMULADOR e um offset da célula deve ser defindo antes da escrita na memória de vídeo.
+> Um valor de cor varia de 0 a 255 (0x00 a 0xFF), tudo deverá estar adicionado em %ACUMULADOR (Usando MOV-ADD-MOV) e um offset da célula deve ser defindo antes da escrita na memória de vídeo.
 > Fórmula do OFFSET: Offset da Célula} = (Y_Célula * 128 + X_Célula)
 
 .section .data
@@ -423,7 +423,7 @@ CELL1 .ascii [desenho]
 CELL1_OFFSET (CELL1_Y * 128 * CELL1_X)
 CELL1_X 10
 CELL1_Y 20
-_______________________________________________________________________________________________________________________________________________________________
+_______________________________________________________________________________________________________________________________________________________________________________________________
 ========================================================
 -} Áudio (Para efeitos sonoros e músicas no seu código):
 ========================================================
