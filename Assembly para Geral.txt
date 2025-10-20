@@ -1,6 +1,6 @@
-================================================================================================================
+=============================================================================================================================
 -} GNU Assembly para Geral (Diretivas, Instruções e Registradores, Mapeamento de Memória, Entrada, Gráficos, Áudio e Online):
-================================================================================================================
+=============================================================================================================================
 =============
 -> Diretivas:
 =============
@@ -51,7 +51,7 @@ T: Ten bytes (80 bits).
 .type: Define o tipo de um símbolo (ex: @function ou @object).
 .size: Define o tamanho do símbolo.
 .set: Atribui o valor de uma expressão a um símbolo.
-______________________________________________________________________________________________________________________________________________________________________
+_________________________________________________________________________________________________________________________________________________________________________
 ==============
 -> Instruções:
 ==============
@@ -106,9 +106,9 @@ INT: Executa uma interrupção.
 IN: Envia um sinal de entrada.
 OUT: Envia um sinal de saída.
 ________________________________________________________________________________________________________________________________________________________________________________
-=============================================================
+====================================================================
 -} SystemV ABI (Para Interações com Código C Externo e Bibliotecas):
-=============================================================
+====================================================================
 1. SystemV ABI x32:
 Retorno: %ACUMULADOR.
 Callee-Saved (Preservados na Chamada): %BASE, %FONTE, %DESTINO, %PILHA.
@@ -119,9 +119,9 @@ Retorno: %ACUMULADOR
 Callee-Saved (Preservados na Chamada): %BASE, %BÔNUS, %PILHA, %R12-15.
 Caller-Saved (Preservados na Função): %ACUMULADOR, %CONTADOR, %DADOS, %FONTE, %DESTINO, %R8-R11.
 ________________________________________________________________________________________________________________
-====================================================
+======================================
 -> Registradores (x86, ARM e PowerPC):
-====================================================
+======================================
 1. x86:
 -] 8-bit:
 -----------
@@ -141,13 +141,13 @@ AX: Accumulator Register (Registrador Acumulador)
 BX: Base Register (Registrador Base)
 CX: Counter Register (Registrador Contador)
 DX: Data Register (Registrador de Dados)
-----------------------------------------------------------------------------------
+-------------------------------------------------
 2. Callee-Saved (Chamada):
 DI: Destination Index (Índice de Destino)
 SI: Source Index (Índice de Fonte)
 BP: Base Pointer (Ponteiro Base)
 SP: Stack Pointer (Ponteiro de Pilha)
-----------------------------------------------------------------
+-----------------------------------------
 -] 32-bit:
 -------------
 1. Caller-Saved (Registrador):
@@ -155,13 +155,13 @@ EAX: Extended Accumulator Register
 EBX: Extended Base Register
 ECX: Extended Counter Register
 EDX: Extended Data Register
-------------------------------------------------------------
+----------------------------------
 2. Callee-Saved (Chamada):
 EDI: Extended Destination Index
 ESI: Extended Source Index
 EBP: Extended Base Pointer
 ESP: Extended Stack Pointer
-------------------------------------------------------------------
+-------------------------------
 -] 64-bit:
 -------------
 1. Caller-Saved (Registrador):
@@ -169,7 +169,7 @@ RAX: Register Accumulator
 RBX: Register Base
 RCX: Register Counter
 RDX: Register Data
-------------------------------------------------------------
+------------------------------
 2. Callee-Saved (Chamada):
 RDI: Register Destination Index
 RSI: Register Source Index
@@ -177,7 +177,7 @@ RBP: Register Base Pointer
 RSP: Register Stack Pointer
 R8 - R9: Registers 8 and 9 (Registradores de Propósito Geral)
 R10 - R15: Registradores Gerais
---------------------------------------------------------------------------------------------------
+-------------------------------------------------------------
 2. ARMv7/v8 (x32, x64):
 -] 32-bit:
 -------------
@@ -186,13 +186,13 @@ R0: Argumento 1 / Valor de Retorno
 R1: Argumento 2
 R2: Argumento 3
 R3: Argumento 4
-------------------------------------------------------------
+-------------------------------------
 2. Callee-Saved (Chamada):
 R4: Variável Local (Preservado pela Chamada)
 R11: Frame Pointer (Ponteiro de Frame) / Variável Local
 R13: Stack Pointer (SP)
 R14: Link Register (LR) (Endereço de Retorno da Função)
-------------------------------------------------------------------------------------------
+-------------------------------------------------------
 -] 64-bit:
 X0: Argumento de Função
 X19: Variável Local
@@ -202,7 +202,7 @@ X3: Argumento de Função
 X4: Argumento de Função
 SP: Stack Pointer
 X29: Frame Pointer
--------------------------------------------
+-----------------------
 3. PowerPC (x32, x64)
 1. Caller-Saved (Registrador):
 R3: Argumento 1 / Valor de Retorno
@@ -210,20 +210,20 @@ R4: Argumento 2
 R5: Argumento 3
 R6: Argumento 4
 R7: Argumento 5
----------------------------------------------------------
+-----------------------------------
 2. Callee-Saved (Chamada):
 R1: Stack Pointer (Ponteiro de Pilha)
 R14: Volátil (Variável Temporária)
 R30 - R31: Variáveis Locais (Preservados pela Chamada)
 ______________________________________________________________________________________________________________________________________________________________________
-=======================================================================
--} Entrada (Para suporte de controles do Computador, Celular e Console)
-=======================================================================
+========================================================================
+-} Entrada (Para suporte de controles do Computador, Celular e Console):
+========================================================================
 Uso: CALL [Função/Comando] e CMP [hex], 1. Em celulares, CMP [Comando], 1
------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------
 -> Parâmetros-Chave:
 PRESSED_KEY: .byte 0x00: Deve ser movido para %ACUMULADOR
----------------------------------------------------------------------------------------------------------
+---------------------------------------------------------
 -> Computador:
 0x01 - Esc
 0x02 - 1
@@ -310,7 +310,7 @@ PRESSED_KEY: .byte 0x00: Deve ser movido para %ACUMULADOR
 0x53 - . (ponto do teclado numérico)
 0x57 - F11
 0x58 - F12
-----------------------------------------------------------
+------------------------------------
 -> Celular :
 I2C_START_TRANSMISSION: Gerar a condição START (SDA LOW, SCL HIGH). Iniciar a comunicação com o TCIC.
 I2C_SEND_SLAVE_ADDR_WRITE <0x00>: Enviar o endereço do TCIC + bit de escrita (0). Dizer ao TCIC para escutar o endereço de registro.
@@ -318,7 +318,7 @@ I2C_SEND_SLAVE_ADDR_READ <0x00>: Gerar REPEATED START ou START + Endereço do TC
 I2C_WRITE_BYTE (REG_ADDR): Enviar o endereço do registrador interno do TCIC (ex: 0x814E). Especificar qual dado (status, X, Y, pressão) o TCIC deve retornar.
 I2C_READ_BYTE (ACK/NACK): Ler 8 bits do TCIC. Receber o Status, a Posição, ou o valor de Pressão.
 I2C_STOP_TRANSMISSION: Gerar a condição STOP (SDA HIGH, SCL HIGH). Finalizar a transação.
--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------------------------------------
 -] Consoles:
 1. PlayStation:
 Cima: 0x00
@@ -343,7 +343,7 @@ LEFT_STICK_X (0x0000 a 0xFFFF): .short 0x0000
 LEFT_STICK_Y (0x0000 a 0xFFFF): .short 0x0000
 RIGHT_STICK_X (0x0000 a 0xFFFF): .short 0x0000
 RIGHT_STICK_Y (0x0000 a 0xFFFF): .short 0x0000
---------------------------------------------------------------------------------
+----------------------------------------------
 2. Xbox:
 D-Pad Cima: 0x01
 D-Pad Baixo: 0x02
@@ -369,19 +369,19 @@ ________________________________
 
 1. x16:
 INT 15h, %ACUMULADOR=E820h
----------------------------------
+--------------------------
 2. x32:
 INT 0x00000015, ACUMULADOR=0x0000E820
------------------------------------------------------------
+-------------------------------------
 3. x64:
 INT 0x0000000000000015, %ACUMULADOR=0x000000000000E820
-____________________________________________________________________________________________________________
-==========
+_______________________________________________________
+=========
 -} Disco:
 ==========
 Leitura: Mover %ACUMULADOR para 0x38(%BASE) em um loop, realizar operação lógica AND com %ACUMULADOR e valor 0x88, comparar %ACUMULADOR com 0 e pular para o loop se %ACUMULADOR não for zero.
 Escrita: Mover o valor 0x1 para %ACUMULADOR
-______________________________________________________________________________________________________________________________________________________________________________________________________________________
+______________________________________________________________________________________________________________________________________________________________________________________________
 ============
 -} Gráficos:
 ============
@@ -420,6 +420,8 @@ G .byte 0x00: Nível da Cor Verde
 B .byte 0x00: Nível da Cor Azul
 CELL1 .ascii [desenho]
 CELL1_OFFSET (20 * 128 * 10)
+CELL1_X 10
+CELL1_Y
 ____________________________________________________________________________________________________________________________________________________________________________________________________________________
 ========================================================
 -} Áudio (Para efeitos sonoros e músicas no seu código):
@@ -434,7 +436,7 @@ CALL SET_STREAM_FORMAT <NID> <STREAM_FORMAT> <PAYLOAD>: Define a taxa, bits e ca
 CALL SET_PIN_WIDGET_CONTROL <NID> <ENABLE_OUT>: Ativa o pino de saída físico (Ex: Headphone) e sua função de saída.
 MOV [DELTA_PI], %BX/%EBX/RBX/%R1/%X1/%R4
 CALL SET_DMA_RUN_BIT: Aciona o controlador HDA para iniciar o loop de transferência de dados do Ring Buffer para o CODEC.
-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 2. Definição de Parâmetros de Áudio, Low/Neg_Max e High/Max:
 PI .double 3.14159265358979323846: Número PI.
 SAMPLE_RATE .equ 44100: Frequência de amostragem (Fs).
@@ -443,16 +445,16 @@ DURATION .byte 1: Duração em segundos.
 BITS_PER_SAMPLE .byte 16: Profundidade de bits.
 MAX_AMPLITUDE .short 32767: Amplitude de Bits.
 NEG_MAX_AMPLITUDE .short -32767: Amplitude Negativa de Bits.
-----------------------------------------------------------------------------------------------------------
+------------------------------------------------------------
 3. Cálculo da Onda Senoidal:
 
 .section .bss
 PHASE_ACC: resd 1: DoubleWord reservado para o Acumulador de Fase.
 DELTA_PI: .long 42852281: Incremento de Fase (Frequência * 2^32 / Sample Rate).
-__________________________________________________________________________________
-==========================
+_______________________________________________________________________________
+==============================
 -} Online (Intel FW e TCP/IP):
-==========================
+=============================
 1. Comandos do Firmware de Rede Intel:
 CTRL $0x0000: Controle Geral do Chip (Reset, Enable/Disable)
 STATUS $0x0008: Status Geral do Link (Link Up/Down)
@@ -467,7 +469,7 @@ TCTL $0x0400: Controle de Transmissão
 TDBAL/TDBAH $0x3800/0x3804: Endereço Base do Anel de Descritores Tx
 TDLEN $0x3808: Tamanho do Anel de Descritores Tx
 TDH/TDT $0x3810/0x3818: Cabeça (Head) e Cauda (Tail) do Anel Tx
-----------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
 2. Parâmetros do TCP/IP:
 
 2.1. Frame Ethernet 
@@ -476,14 +478,14 @@ MAC_ORIGIN 0x06: Seu endereço MAC. (Variável). (Este é o MAC lido do NIC da I
 ETHERTYPE $0x0C: Identifica o protocolo da Camada 3. (Padrão/Fixo):0x0800 para IPv4, 0x0806 para ARP.
 PAYLOAD $0x0E: O Cabeçalho IP começa aqui.
 CRC (Checksum de Frame): Este campo é gerado e anexado AUTOMATICAMENTE pelo controlador Intel no momento da transmissão.
----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
 2.2. Cabeçalho IPv4:
 VERSION_IHL $0x00>: Geralmente 0x45. (Versão 4, IHL 5 - 20 bytes).
 PROTOCOL <$0x09>: 0x06 (para TCP) ou 0x11 (para UDP).
 CHKSUM_HEADER 0x0A: O campo que você deve calcular em bare-metal, usando o algoritmo de Soma Complementar de Um.
 IP_ORIGIN 0x0C: Seu Endereço IP. (Variável).
 IP_DESTINY 0x10: Endereço IP do host de destino. (Variável).
-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------
 2.3. Cabecalho TCP:
 PORT_ORIGIN $0x00>: Sua porta (aplicação/serviço local).
 PORT_DESTINY $0x02: Porta do serviço remoto (ex: 80, 443).
@@ -505,4 +507,4 @@ RST (Resetar): $0x04
 Configuração da APIC: Sequências de OUTs e MOVs para os endereços do Firmware de Rede Intel.
 Rotina de Serviço: Salvar Contexto, Ler e Escrever nos pacotes do NIC, e restaurar.
 Loops: Loop de Jumps entre as tarefas.
-__________________________________________________________________________________________________
+____________________________________________________________________________________________
