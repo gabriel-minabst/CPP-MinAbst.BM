@@ -1,7 +1,6 @@
 ================================================================================================================
 -} GNU Assembly para Geral (Diretivas, Instruções e Registradores, Mapeamento de Memória, Entrada, Gráficos, Áudio e Online):
 ================================================================================================================
-
 =============
 -> Diretivas:
 =============
@@ -101,9 +100,12 @@ PUSH: Empurra o valor do operando para a pilha, decrementando o ponteiro da pilh
 POP: Retira o valor do topo da pilha para o operando destino, incrementando o ponteiro da pilha (%sp/%esp/%rsp/%r13/%sp/%r1).
 CALL: Empurra o endereço da próxima instrução para a pilha e salta para a sub-rotina.
 RET: Retira o endereço do topo da pilha e salta para esse endereço (retorno de sub-rotina).
+IRET:
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 6. I/O (Uso: INT $1, %ax/%eax/%rax/%r0/%x0/%r3):
-INT: Executa uma interrupção
+INT: Executa uma interrupção.
+IN: Envia um sinal de entrada.
+OUT: Envia um sinal de saída.
 ________________________________________________________________________________________________________________________________________________________________________________
 
 ====================================================
@@ -662,7 +664,7 @@ CALL SET_STREAM_FORMAT <NID> <STREAM_FORMAT> <PAYLOAD>: Define a taxa, bits e ca
 CALL SET_PIN_WIDGET_CONTROL <NID> <ENABLE_OUT>: Ativa o pino de saída físico (Ex: Headphone) e sua função de saída.
 MOV [DELTA_PI], %BX/%EBX/RBX/%R1/%X1/%R4
 CALL SET_DMA_RUN_BIT: Aciona o controlador HDA para iniciar o loop de transferência de dados do Ring Buffer para o CODEC.
-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 2. Definição de Parâmetros de Áudio, Low/Neg_Max e High/Max:
 PI .double 3.14159265358979323846: Número PI.
@@ -679,4 +681,61 @@ NEG_MAX_AMPLITUDE .short -32767: Amplitude Negativa de Bits.
 .section .bss
 PHASE_ACC: resd 1: DoubleWord reservado para o Acumulador de Fase.
 DELTA_PI: .long 42852281: Incremento de Fase (Frequência * 2^32 / Sample Rate).
--------------------------------------------------------------------------------------------------------------------------------------
+__________________________________________________________________________________
+
+==========================
+-} Online (Intel FW e TCP/IP):
+==========================
+1. Comandos do Firmware de Rede Intel:
+CTRL 0x0000: Controle Geral do Chip (Reset, Enable/Disable)
+STATUS 0x0008: Status Geral do Link (Link Up/Down)
+EERD 0x0014: Leitura da EEPROM/NVM (para ler o MAC)
+IMC 0x00D0: Máscara de Interrupção (para ignorar/habilitar interrupções)
+RCTL 0x0100: Controle de Recepção
+RAL/RAH 0x5400/0x5404: Endereço MAC (Lower/Upper 32 bits)
+RDBAL/RDBAH 0x2800/0x2804: Endereço Base do Anel de Descritores Rx (Lower/Upper)
+RDLEN 0x2808: Tamanho do Anel de Descritores Rx
+RDH/RDT 0x2810/0x2818: Cabeça (Head) e Cauda (Tail) do Anel Rx
+TCTL 0x0400: Controle de Transmissão
+TDBAL/TDBAH 0x3800/0x3804: Endereço Base do Anel de Descritores Tx
+TDLEN 0x3808: Tamanho do Anel de Descritores Tx
+TDH/TDT 0x3810/0x3818: Cabeça (Head) e Cauda (Tail) do Anel Tx
+----------------------------------------------------------------------------------------------------------------------------------------------
+2. Parâmetros do TCP/IP:
+
+2.1. Frame Ethernet 
+MAC_DESTINY 0x00: Endereço MAC do próximo dispositivo na rede (roteador ou host final). (Variável)
+MAC_ORIGIN 0x06: Seu endereço MAC. (Variável). (Este é o MAC lido do NIC da Intel).
+ETHERTYPE <0x0C> (12): Identifica o protocolo da Camada 3. (Padrão/Fixo):0x0800 para IPv4, 0x0806 para ARP.
+PAYLOAD <0x0E> (14): O Cabeçalho IP começa aqui.
+CRC (Checksum de Frame): Este campo é gerado e anexado AUTOMATICAMENTE pelo controlador Intel no momento da transmissão.
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+2.2. Cabeçalho IPv4:
+VERSION_IHL <0x00>: Geralmente 0x45. (Versão 4, IHL 5 - 20 bytes).
+PROTOCOL <0x09>: 0x06 (para TCP) ou 0x11 (para UDP).
+CHKSUM_HEADER <0x0A>: O campo que você deve calcular em bare-metal, usando o algoritmo de Soma Complementar de Um.
+IP_ORIGIN <0x0C>: Seu Endereço IP. (Variável).
+IP_DESTINY <0x10>: Endereço IP do host de destino. (Variável).
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+2.3. Cabecalho TCP:
+PORT_ORIGIN <0x00>: Sua porta (aplicação/serviço local).
+PORT_DESTINY <0x02>: Porta do serviço remoto (ex: 80, 443).
+SEQUENCE <0x04>: Posição do primeiro byte de dados do segmento.
+ACK (Reconhecimento) <0x08>: Próximo número de sequência esperado do lado remoto.
+RES_FLAGS <0x0C>: Contém o Data Offset e os Control Flags.
+WINDOW_SIZE <0x0E>: Controle de fluxo (Buffer de recepção disponível).
+CHKSUM <0x10>: Resultado do cálculo do Pseudo-Cabeçalho + TCP + Dados.
+URGENCY_POINT <0x12>: Ponto de Urgência Fixo (Geralmente 0x0000).
+OPT_FILL <0x14>: Usado se o Data Offset for maior que 5.
+SYN (Início): <0x02>
+SYN-ACK (Resposta): 0x12 (0x10 ACK + 0x02 SYN)
+ACKS (Reconhecimento): 0x10
+PSH-ACK (Enviar Dados): 0x18 (0x08 PSH + 0x10 ACK)
+FIN-ACK (Encerrar): 0x11 (0x01 FIN + 0x10 ACK)
+RST (Resetar): 0x04
+
+3. APIC:
+Configuração da APIC: Sequências de OUTs e MOVs para os endereços do Firmware de Rede Intel.
+Rotina de Serviço: Salvar Contexto, Ler e Escrever nos pacotes do NIC, e restaurar.
+Loops: Loop de Jumps entre as tarefas.
+________________________________________________________________________________________________________________________________
