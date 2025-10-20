@@ -1,5 +1,5 @@
 ==================================================================================================
--} Assembly para Geral (Diretivas, Instruções e Registradores, Entrada, Gráficos, Áudio e Online):
+-} Assembly para Geral (Diretivas, Instruções e Registradores, Interrupções, Entrada, Gráficos, Áudio e Online):
 ==================================================================================================
 
 =============
@@ -12,6 +12,9 @@
 .rodata: Define a seção de dados somente leitura (como strings e constantes).
 .bss: Define a seção de dados não inicializados (variáveis que serão zeradas em tempo de execução).
 .section: Uma alternativa mais genérica para definir uma seção.
+.code16: Define a seção de código 16-bit.
+.code32: Define a seção de código 32-bit.
+.code64: Define a seção de código 64-bit.
 
 2. Definição de Dados e Alocação de Espaço:
 .byte: Insere um ou mais bytes de dados.
@@ -27,7 +30,7 @@
 
 3. Prefixos, Símbolos e Sufixos:
 
-1. Prefixos:
+3.1. Prefixos:
 $: Prefixo usado para denotar que o operando é um valor literal (constante) e não um endereço de memória ou um registrador.
 %: Prefixo usado antes do nome de um registrador para identificá-lo explicitamente. (Ex: %rax, %rsp, %rdi).
 (): Indica que o valor entre parênteses é um endereço de memória cujo conteúdo deve ser acessado.
@@ -36,14 +39,15 @@ $: Prefixo usado para denotar que o operando é um valor literal (constante) e n
 *: Usado antes de um operando (registrador ou memória) para indicar que o alvo de um JMP ou CALL é o conteúdo desse operando (o endereço está no registrador/memória).
 .: Endereço Atual/Diretiva
 
-2. Sufixos de Tamanho de Byte:
+3.2. Sufixos de Tamanho de Byte:
 B: Byte (8 bits).
 W: Word (16 bits).
 L: Long (32 bits).
 Q: Quadword (64 bits).
 T: Ten bytes (80 bits).
+----------------------------------------------------
 
-2. Símbolos:
+4. Símbolos:
 .globl ou .global: Torna o símbolo visível para outros arquivos objeto (exporta a função ou variável). Essencial para a função de entrada principal.
 .local: Torna o símbolo visível apenas dentro do arquivo atual.
 .type: Define o tipo de um símbolo (ex: @function ou @object).
@@ -112,94 +116,94 @@ ________________________________________________________________________________
 1. x86:
 
 -] 8-bit:
-AL - Acumulador Baixo/Low
-AH - Acumulador Alto/High
-BL - Base Baixa/Low
-BH - Base Alta/High
-CL - Contador Baixo/Low
-CH - Contador Alto/High
-DL - Dados Baixos/Low
-DH - Dados Altos/High
+AL: Acumulador Baixo/Low
+AH: Acumulador Alto/High
+BL: Base Baixa/Low
+BH: Base Alta/High
+CL: Contador Baixo/Low
+CH: Contador Alto/High
+DL: Dados Baixos/Low
+DH: Dados Altos/High
 -------------------------
 
 -] 16-bit:
-AX	Accumulator Register (Registrador Acumulador)
-BX	Base Register (Registrador Base)
-CX	Counter Register (Registrador Contador)
-DX	Data Register (Registrador de Dados)
-DI	Destination Index (Índice de Destino)
-SI	Source Index (Índice de Fonte)
-BP	Base Pointer (Ponteiro Base)
-SP	Stack Pointer (Ponteiro de Pilha)
+AX: Accumulator Register (Registrador Acumulador)
+BX: Base Register (Registrador Base)
+CX: Counter Register (Registrador Contador)
+DX: Data Register (Registrador de Dados)
+DI: Destination Index (Índice de Destino)
+SI: Source Index (Índice de Fonte)
+BP: Base Pointer (Ponteiro Base)
+SP: Stack Pointer (Ponteiro de Pilha)
 ------------------------------------------------
 
 -] 32-bit (E Significa Estendido/Extended):
-EAX	Extended Accumulator Register
-EBX	Extended Base Register
-ECX	Extended Counter Register
-EDX	Extended Data Register
-EDI	Extended Destination Index
-ESI	Extended Source Index
-EBP	Extended Base Pointer
-ESP	Extended Stack Pointer
--------------------------------------------
+EAX: Extended Accumulator Register
+EBX: Extended Base Register
+ECX: Extended Counter Register
+EDX: Extended Data Register
+EDI: Extended Destination Index
+ESI: Extended Source Index
+EBP: Extended Base Pointer
+ESP: Extended Stack Pointer
+------------------------------------------------------------------
 
 -] 64-bit:
-RAX	Register Accumulator
-RBX	Register Base
-RCX	Register Counter
-RDX	Register Data
-RDI	Register Destination Index
-RSI	Register Source Index
-RBP	Register Base Pointer
-RSP	Register Stack Pointer
-R8 - R9	Registers 8 and 9 (Registradores de Propósito Geral)
+RAX: Register Accumulator
+RBX: Register Base
+RCX: Register Counter
+RDX: Register Data
+RDI: Register Destination Index
+RSI: Register Source Index
+RBP: Register Base Pointer
+RSP: Register Stack Pointer
+R8 - R9: Registers 8 and 9 (Registradores de Propósito Geral)
 R10 - R15: Registradores Gerais
-------------------------------------------------------------
+--------------------------------------------------------------------------------------------------
 
 2. ARMv7/v8 (x32, x64):
 
 -] 32-bit:
-R0	Argumento 1 / Valor de Retorno
-R1	Argumento 2
-R2	Argumento 3
-R3	Argumento 4
-R4	Variável Local (Preservado pela Chamada)
-R11	Frame Pointer (Ponteiro de Frame) / Variável Local
-R13	Stack Pointer (SP)
-R14	Link Register (LR) (Endereço de Retorno da Função)
-------------------------------------------------------------
+R0: Argumento 1 / Valor de Retorno
+R1: Argumento 2
+R2: Argumento 3
+R3: Argumento 4
+R4: Variável Local (Preservado pela Chamada)
+R11: Frame Pointer (Ponteiro de Frame) / Variável Local
+R13: Stack Pointer (SP)
+R14: Link Register (LR) (Endereço de Retorno da Função)
+--------------------------------------------------------------------------------------------
 
 -] 64-bit:
-X0 - Argumento de Função
-X19 - Variável Local
-X1 - Argumento de Função
-X2 - Argumento de Função
-X3 - Argumento de Função
-X4 - Argumento de Função
-SP - Stack Pointer
-X29 - Frame Pointer
-------------------------
+X0: Argumento de Função
+X19: Variável Local
+X1: Argumento de Função
+X2: Argumento de Função
+X3: Argumento de Função
+X4: Argumento de Função
+SP: Stack Pointer
+X29: Frame Pointer
+-------------------------------------------
 3. PowerPC (x32, x64)
 
-R1	Stack Pointer (Ponteiro de Pilha)
-R3	Argumento 1 / Valor de Retorno
-R4	Argumento 2
-R5	Argumento 3
-R6	Argumento 4
-R7	Argumento 5
-R14	Volátil (Variável Temporária)
-R30 - R31	Variáveis Locais (Preservados pela Chamada)
+R1: Stack Pointer (Ponteiro de Pilha)
+R3: Argumento 1 / Valor de Retorno
+R4: Argumento 2
+R5: Argumento 3
+R6: Argumento 4
+R7: Argumento 5
+R14:vVolátil (Variável Temporária)
+R30 - R31: Variáveis Locais (Preservados pela Chamada)
 ______________________________________________________________________________________________________________________________________________________________________
 
 =======================================================================
 -} Entrada (Para suporte de controles do Computador, Celular e Console)
 =======================================================================
 -> Parâmetros-Chave:
-PRESSED_KEY: .byte 0x00 # Deve ser movido para AL
+PRESSED_KEY: .byte 0x00: Deve ser movido para AL
+-----------------------------------------------------------------------------------
 
 -> Computador:
-
 0x01 - Esc
 0x02 - 1
 0x03 - 2
@@ -285,13 +289,18 @@ PRESSED_KEY: .byte 0x00 # Deve ser movido para AL
 0x53 - . (ponto do teclado numérico)
 0x57 - F11
 0x58 - F12
-
+----------------------------------------------------------
 -> Celular:
+I2C_START_TRANSMISSION: Gerar a condição START (SDA LOW, SCL HIGH). Iniciar a comunicação com o TCIC.
+I2C_SEND_SLAVE_ADDR_WRITE <0x00>: Enviar o endereço do TCIC + bit de escrita (0). Dizer ao TCIC para escutar o endereço de registro.
+I2C_SEND_SLAVE_ADDR_READ <0x00>: Gerar REPEATED START ou START + Endereço do TCIC + bit de leitura (1). Dizer ao TCIC para enviar os dados.
+I2C_WRITE_BYTE (REG_ADDR): Enviar o endereço do registrador interno do TCIC (ex: 0x814E). Especificar qual dado (status, X, Y, pressão) o TCIC deve retornar.
+I2C_READ_BYTE (ACK/NACK): Ler 8 bits do TCIC. Receber o Status, a Posição, ou o valor de Pressão.
+I2C_STOP_TRANSMISSION: Gerar a condição STOP (SDA HIGH, SCL HIGH). Finalizar a transação.
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 -] Consoles:
-
--> PlayStation:
-
+1. PlayStation:
 Cima: 0x00
 Direita: 0x02
 Baixo: 0x04
@@ -310,13 +319,13 @@ Options: 0x69
 L3: 0x6C
 R3: 0x6D
 Touchpad: 0x6A
-LEFT_STICK_X: 0x00 a 0xFF
-LEFT_STICK_Y: 0x00 a 0xFF
-RIGHT_STICK_X: 0x00 a 0xFF
-RIGHT_STICK_Y: 0x00 a 0xFF
+LEFT_STICK_X (0x00 a 0xFF): .short 0x00
+LEFT_STICK_Y (0x00 a 0xFF): .short 0x00
+RIGHT_STICK_X (0x00 a 0xFF): .short 0x00
+RIGHT_STICK_Y (0x00 a 0xFF): .short 0x00
+----------------------------------------------
 
--> Xbox:
-
+2. Xbox:
 D-Pad Cima: 0x01
 D-Pad Baixo: 0x02
 D-Pad Direita: 0x03
@@ -331,7 +340,28 @@ X: 0x0E
 Y: 0x0F
 LB: 0x09
 RB: 0x0A
+LT: 
+------------------------------------
+3. Nintendo:
+
 ________________________________
+
+==========================
+-} Mapeamento de Memória:
+==========================
+> Usa uma interrupção para ver o mapa de memória, permitindo que você possa escrever no endereço dela.
+
+1. x16:
+INT 15h, %AX=E820h
+---------------------------------
+
+2. x32:
+INT 0x00000015, %EAX/%R0/%R3/=0x0000E820
+-----------------------------------------------------------
+
+3. x64:
+INT 0x0000000000000015, %RAX/%X0/%X4/=0x000000000000E820
+____________________________________________________________________________________________________________
 
 ============
 -} Gráficos:
@@ -351,12 +381,12 @@ ________________________________
 Iniciar: GUC_CMD_GLOBAL_INIT
 Alocar: GUC_CMD_ALLOC_RESOURCE <SIZE>, <HeapID>, <ALIGN>
 Escrever: GUC_CMD_QUEUE_RING_FLUSH
--------------------
+------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 -] AMD:
 Iniciar: SMU_CMD_INIT_PM
 Alocar/Escrever: SMU_CMD_ALLOCATE_MEM <SIZE>, <HeapID>, <ALIGN>
----------
+---------------------------------------------------------------------------------------------------------------------
 
 -] NVidia:
 Iniciar:
@@ -373,10 +403,9 @@ SPRITE1_X_POS .byte 0
 SPRITE1_Y_POS .byte 0
 SPRITE1_X .byte 0
 SPRITE1_Y .byte 0
------------------------------------------------------------------------------
+--------------------------------------------------------
 
 3. Bytes de Cores RGB:
-
 0 0x00
 1 0x01
 2 0x02
@@ -633,25 +662,23 @@ SPRITE1_Y .byte 0
 253 0xFD
 254 0xFE
 255 0xFF
-_______________
+_______________________________________________________________________________________________________________
 
 ========================================================
 -} Áudio (Para efeitos sonoros e músicas no seu código):
 ========================================================
-
 -] Windows:
-> Requer a syscall MmAllocateContiguousMemory(), rótulo dev no CX/ECX/RCX, size em DX/EDX/RDX, dma_handle no R8, flags no R9 (ou tudo na pilha em sistemas x32), e chamada de códigos do HDA, além do código de todo o projeto em um arquivo .sys e seu executor.
+> Requer > Requer "INT 15h/0x15/0x00000015/0x0000000000000015, %AX/%EAX/%RAX/%R0/%X0/%R3/=E820h/0x0000E820/0x000000000000E820", Delta Pi no Base e chamada de códigos do HDA, além do código de todo o projeto em um arquivo .sys e seu executor.
 
 -> Parâmetros Gerais:
 1. Chamadas de Comandos do HDA (Universal em PCs):
 - Padrôes de formato de stream são NID 0x06, Stream Format 0x200, e Payload 0x441.
 - Padrões de Ativação do Dispositivo de Áudio são 0x40 para a Saída e 0x80 para o Headphone.
-
 CALL SET_STREAM_FORMAT <NID> <STREAM_FORMAT> <PAYLOAD>: Define a taxa, bits e canais para 48kHz/16bit/Estéreo no DAC/ADC.
 CALL SET_PIN_WIDGET_CONTROL <NID> <ENABLE_OUT>: Ativa o pino de saída físico (Ex: Headphone) e sua função de saída.
-CALL MmAllocateContiguousMemory(): Requisito de Kernel para o Ring Buffer (para DMA).
+MOV [DELTA_PI], %BX/%EBX/RBX/%R1/%X1/%R4
 CALL SET_DMA_RUN_BIT: Aciona o controlador HDA para iniciar o loop de transferência de dados do Ring Buffer para o CODEC.
--------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 2. Definição de Parâmetros de Áudio, Low/Neg_Max e High/Max:
 PI .double 3.14159265358979323846: Número PI.
@@ -661,31 +688,29 @@ DURATION .byte 1: Duração em segundos.
 BITS_PER_SAMPLE .byte 16: Profundidade de bits.
 MAX_AMPLITUDE .short 32767: Amplitude de Bits.
 NEG_MAX_AMPLITUDE .short -32767: Amplitude Negativa de Bits.
---------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------
 
 3. Cálculo da Onda Senoidal:
 
 .section .bss
 PHASE_ACC: resd 1: DoubleWord reservado para o Acumulador de Fase.
 DELTA_PI: .long 42852281: Incremento de Fase (Frequência * 2^32 / Sample Rate).
--------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------
 
 -] Linux:
-> Requer chamada da kernelapi dma_alloc_coherent(), rótulo dev no DI/EDI/RDI, size em SI/ESI/RSI, dma_handle no DX/EDX/RDX, flags no CX/ECX/RCX (ou tudo na pilha em sistemas x32), e chamada de comandos do HDA, além do código de todo o projeto em um arquivo .ko e seu executor.
+> Requer "INT 15h/0x15/0x00000015/0x0000000000000015, %AX/%EAX/%RAX/%R0/%X0/%R3/=E820h/0x0000E820/0x000000000000E820" e chamada de comandos do HDA, além do código de todo o projeto em um arquivo .ko e seu executor.
 
 -> Parâmetros Gerais:
 1. Chamadas de Comandos do HDA (Universal em PCs):
 - Padrôes de formato de stream são NID 0x06, Stream Format 0x200, e Payload 0x441.
 - Padrões de Ativação do Dispositivo de Áudio são 0x40 para a Saída e 0x80 para o Headphone.
-
 CALL SET_STREAM_FORMAT <NID> <STREAM_FORMAT> <PAYLOAD>: Define a taxa, bits e canais para 48kHz/16bit/Estéreo no DAC/ADC.
 CALL SET_PIN_WIDGET_CONTROL <NID> <ENABLE_OUT>: Ativa o pino de saída físico (Ex: Headphone) e sua função de saída.
-CALL dma_alloc_coherent(): Requisito de Kernel para o Ring Buffer (para DMA).
+MOV [DELTA_PI], %BX/%EBX/RBX/%R1/%X1/%R4
 CALL SET_DMA_RUN_BIT: Aciona o controlador HDA para iniciar o loop de transferência de dados do Ring Buffer para o CODEC.
--------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 2. Definição de Parâmetros de Áudio, Low/Neg_Max e High/Max:
-dev .
 PI .double 3.14159265358979323846: Número PI.
 SAMPLE_RATE .equ 44100: Frequência de amostragem (Fs).
 FREQUENCY .short 440: Frequência do seno (f).
@@ -693,11 +718,11 @@ DURATION .byte 1: Duração em segundos.
 BITS_PER_SAMPLE .byte 16: Profundidade de bits.
 MAX_AMPLITUDE .short 32767: Amplitude de Bits.
 NEG_MAX_AMPLITUDE .short -32767: Amplitude Negativa de Bits.
---------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------
 
-3. Cálculo da Onda Senoidal:
+3. Cálculo da Onda Senoidal e Escrita na Memória:
 
 .section .bss
 PHASE_ACC: resd: DoubleWord reservado para o Acumulador de Fase.
 DELTA_PI: .long 42852281: Incremento de Fase (Frequência * 2^32 / Sample Rate).
--------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------------
