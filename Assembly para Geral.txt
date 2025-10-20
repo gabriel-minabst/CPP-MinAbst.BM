@@ -5,7 +5,6 @@
 =============
 -> Diretivas:
 =============
-
 1. Seções de Código e Dados:
 .text: Define o início da seção de código (instruções executáveis).
 .data: Define o início da seção de dados inicializados (variáveis com valor inicial).
