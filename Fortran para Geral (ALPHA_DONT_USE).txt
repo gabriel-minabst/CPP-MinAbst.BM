@@ -48,18 +48,57 @@ UNIT: Argumento que especifica um número para o canal de I/O.
 FORMAT: Especifica o layout da entrada ou saída formatada.
 STOP: Encerra a execução do programa de forma normal.
 
-====================================================================
--} SystemV ABI (Para Interações com Código C Externo e Bibliotecas):
-====================================================================
-1. SystemV ABI x32:
-Retorno: AX/EAX/RAX/RBX.
-Callee-Saved (Preservados na Chamada): %BASE, %FONTE, %DESTINO, %PILHA.
-Caller-Saved (Preservados na Função): %ACUMULADOR, %CONTADOR, %DADOS.
 
-2. SystemV ABI x64:
-Retorno: %ACUMULADOR
-Callee-Saved (Preservados na Chamada): %BASE, %BÔNUS, %PILHA, %R12-15.
-Caller-Saved (Preservados na Função): %ACUMULADOR, %CONTADOR, %DADOS, %FONTE, %DESTINO, %R8-R11.
+
+========================================================================================================================
+-} Fortran 77 para Geral (Regras, Operadores, Palavras-Chave, Mapeamento de Memória, Entrada, Gráficos, Áudio e Online):
+========================================================================================================================
+Regras do Formato Fixo do Fortran 77:
+Coluna 1, Regra: Se a coluna 1 contiver um C, um * (asterisco), ou um D (dependendo do compilador), a linha inteira é tratada como um comentário e ignorada."
+Colunas 1 a 5, Regra: Espaço reservado para números inteiros (rótulos) de 1 a 5 dígitos. Esses rótulos são usados por instruções como GO TO, DO, READ e WRITE (para referenciar instruções FORMAT). O número não precisa estar justificado à direita.
+Coluna 6, Regra: Se uma instrução for muito longa para caber na coluna 72, a próxima linha é uma continuação se a coluna 6 contiver qualquer caractere que não seja um espaço ou 0 (zero). O + ou um número sequencial eram populares.
+Colunas 7 a 72, Regra: Aqui é onde o código real reside (declarações, instruções executáveis). Importante: Os espaços em branco são geralmente ignorados pelo Fortran 77 (com exceção de strings de caracteres). Por exemplo, I N T E G E R é lido como INTEGER.
+Colunas 73 a 80, Regra: Essas colunas são ignoradas pelo compilador. Elas eram usadas para armazenar números de sequência em cartões perfurados para ajudar na classificação, caso os cartões fossem misturados.
+
+==============
+-> Operadores:
+==============
+.AND., .OR., .NOT., .EQ., .NE., .LT., .LE., .GT., .GE.: Operadores Lógicos Bit-a-Bit e de Salto
+
+==================
+-> Palavras-Chave:
+==================
+PROGRAM: Inicia o programa principal.
+ENDPROGRAM: Finaliza o programa principal.
+INTEGER: Declara uma variável como número inteiro.
+REAL: Declara uma variável como número de ponto flutuante (precisão simples).
+DOUBLE PRECISION: Tipos,Declara uma variável de ponto flutuante de precisão dupla.
+COMPLEX: Declara uma variável como número complexo.
+LOGICAL: Declara uma variável booleana (.TRUE. ou .FALSE.).
+CHARACTER: Declara uma variável de string (e.g., CHARACTER(LEN=20)).
+DIMENSION: Declara o rank e os limites de um array.
+PARAMETER: Declara uma constante simbólica.
+FUNCTION: Inicia a definição de uma função (retorna um valor).
+SUBROUTINE: Inicia a definição de uma sub-rotina (não retorna valor por nome).
+CALL: Invoca/executa uma sub-rotina.
+CONTAINS: Separa o código principal de procedimentos internos (FUNCTION ou SUBROUTINE).
+RETURN: Sai de uma função ou sub-rotina.
+IF: Inicia uma estrutura condicional.
+THEN: Usado após a condição IF.
+ELSE: Bloco de código executado se a condição IF for falsa.
+ELSE IF Bloco de código para uma condição alternativa.
+ENDIF: Finaliza a estrutura condicional IF.
+DO: Inicia um loop (iteração).
+ENDDO: Finaliza o loop DO.
+CYCLE: Pula para a próxima iteração do loop DO.
+EXIT: Sai imediatamente de um loop DO.
+READ: Comando de entrada de dados (e.g., do teclado ou arquivo).
+WRITE: Comando de saída de dados (e.g., para tela ou arquivo).
+OPEN: Abre um arquivo para I/O.
+CLOSE: Fecha um arquivo aberto.
+UNIT: Argumento que especifica um número para o canal de I/O.
+FORMAT: Especifica o layout da entrada ou saída formatada.
+STOP: Encerra a execução do programa de forma normal.
 
 ========================================================================
 -} Entrada (Para suporte de controles do Computador, Celular e Console):
@@ -70,97 +109,97 @@ Uso: CALL [Função/Comando] e IF PRESSED_KEY == 1
 PRESSED_KEY = Z'00': Deve ser movido para %ACUMULADOR
 ---------------------------------------------------------
 -> Computador:
-0x01 - Esc
-0x02 - 1
-0x03 - 2
-0x04 - 3
-0x05 - 4
-0x06 - 5
-0x07 - 6
-0x08 - 7
-0x09 - 8
-0x0A - 9
-0x0B - 0
-0x0C - -
-0x0D - =
-0x0E - Backspace
-0x0F - Tab
-0x10 - Q
-0x11 - W
-0x12 - E
-0x13 - R
-0x14 - T
-0x15 - Y
-0x16 - U
-0x17 - I
-0x18 - O
-0x19 - P
-0x1A - ´ (acento agudo)
-0x1B - [ (abre colchete)
-0x1C - Enter
-0x1D - Ctrl esquerdo
-0x1E - A
-0x1F - S
-0x20 - D
-0x21 - F
-0x22 - G
-0x23 - H
-0x24 - J
-0x25 - K
-0x26 - L
-0x27 - Ç
-0x28 - ~ (til)
-0x29 - ` (crase)
-0x2A - Shift esquerdo
-0x2B - \ (barra invertida)
-0x2C - Z
-0x2D - X
-0x2E - C
-0x2F - V
-0x30 - B
-0x31 - N
-0x32 - M
-0x33 - , (vírgula)
-0x34 - . (ponto)
-0x35 - ; (ponto e vírgula)
-0x36 - Shift direito
-0x37 - * (no teclado numérico)
-0x38 - Alt esquerdo
-0x39 - Espaço
-0x3A - Caps Lock
-0x3B - F1
-0x3C - F2
-0x3D - F3
-0x3E - F4
-0x3F - F5
-0x40 - F6
-0x41 - F7
-0x42 - F8
-0x43 - F9
-0x44 - F10
-0x45 - Num Lock
-0x46 - Scroll Lock
-0x47 - 7 (teclado numérico)
-0x48 - 8
-0x49 - 9
-0x4A - -
-0x4B - 4
-0x4C - 5
-0x4D - 6
-0x4E - +
-0x4F - 1
-0x50 - 2
-0x51 - 3
-0x52 - 0
-0x53 - . (ponto do teclado numérico)
-0x57 - F11
-0x58 - F12
+Z'01' - Esc
+Z'02' - 1
+Z'03' - 2
+Z'04' - 3
+Z'05' - 4
+Z'06' - 5
+Z'07' - 6
+Z'08' - 7
+Z'09' - 8
+Z'0A' - 9
+Z'0B' - 0
+Z'0C' - -
+Z'0D' - =
+Z'0E' - Backspace
+Z'0F' - Tab
+Z'10' - Q
+Z'11' - W
+Z'12' - E
+Z'13' - R
+Z'14' - T
+Z'15' - Y
+Z'16' - U
+Z'17' - I
+Z'18' - O
+Z'19' - P
+Z'1A' - ´ (acento agudo)
+Z'1B' - [ (abre colchete)
+Z'1C' - Enter
+Z'1D' - Ctrl esquerdo
+Z'1E' - A
+Z'1F' - S
+Z'20' - D
+Z'21' - F
+Z'22' - G
+Z'23' - H
+Z'24' - J
+Z'25' - K
+Z'26' - L
+Z'27' - Ç
+Z'28' - ~ (til)
+Z'29' - ` (crase)
+Z'2A' - Shift esquerdo
+Z'2B' - \ (barra invertida)
+Z'2C' - Z
+Z'2D' - X
+Z'2E' - C
+Z'2F' - V
+Z'30' - B
+Z'31' - N
+Z'32' - M
+Z'33' - , (vírgula)
+Z'34' - . (ponto)
+Z'35' - ; (ponto e vírgula)
+Z'36' - Shift direito
+Z'37' - * (no teclado numérico)
+Z'38' - Alt esquerdo
+Z'39' - Espaço
+Z'3A' - Caps Lock
+Z'3B' - F1
+Z'3C' - F2
+Z'3D' - F3
+Z'3E' - F4
+Z'3F' - F5
+Z'40' - F6
+Z'41' - F7
+Z'42' - F8
+Z'43' - F9
+Z'44' - F10
+Z'45' - Num Lock
+Z'46' - Scroll Lock
+Z'47' - 7 (teclado numérico)
+Z'48' - 8
+Z'49' - 9
+Z'4A' - -
+Z'4B' - 4
+Z'4C' - 5
+Z'4D' - 6
+Z'4E' - +
+Z'4F' - 1
+Z'50' - 2
+Z'51' - 3
+Z'52' - 0
+Z'53' - . (ponto do teclado numérico)
+Z'57' - F11
+Z'58' - F12
 ------------------------------------
 -> Celular :
 I2C_START_TRANSMISSION: Gerar a condição START (SDA LOW, SCL HIGH). Iniciar a comunicação com o TCIC.
-I2C_SEND_SLAVE_ADDR_WRITE <0x00>: Enviar o endereço do TCIC + bit de escrita (0). Dizer ao TCIC para escutar o endereço de registro.
-I2C_SEND_SLAVE_ADDR_READ <0x00>: Gerar REPEATED START ou START + Endereço do TCIC + bit de leitura (1). Dizer ao TCIC para enviar os dados.
-I2C_WRITE_BYTE (REG_ADDR): Enviar o endereço do registrador interno do TCIC (ex: 0x814E). Especificar qual dado (status, X, Y, pressão) o TCIC deve retornar.
+I2C_SEND_SLAVE_ADDR_WRITE Z'00': Enviar o endereço do TCIC + bit de escrita (0). Dizer ao TCIC para escutar o endereço de registro.
+I2C_SEND_SLAVE_ADDR_READ Z'00': Gerar REPEATED START ou START + Endereço do TCIC + bit de leitura (1). Dizer ao TCIC para enviar os dados.
+I2C_WRITE_BYTE (REG_ADDR): Enviar o endereço do registrador interno do TCIC (ex: Z'814E'). Especificar qual dado (status, X, Y, pressão) o TCIC deve retornar.
 I2C_READ_BYTE (ACK/NACK): Ler 8 bits do TCIC. Receber o Status, a Posição, ou o valor de Pressão.
 I2C_STOP_TRANSMISSION: Gerar a condição STOP (SDA HIGH, SCL HIGH). Finalizar a transação.
 --------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -329,7 +368,7 @@ TDH/TDT Z'3810'/Z'3818': Cabeça (Head) e Cauda (Tail) do Anel Tx
 ---------------------------------------------------------------------------------
 2. Parâmetros do TCP/IP:
 
-2.1. Frame Ethernet 
+2.1. Frame Ethernet
 MAC_DESTINY Z'00': Endereço MAC do próximo dispositivo na rede (roteador ou host final). (Variável)
 MAC_ORIGIN Z'06': Seu endereço MAC. (Variável). (Este é o MAC lido do NIC da Intel).
 ETHERTYPE Z'0C': Identifica o protocolo da Camada 3. (Padrão/Fixo):Z'0800' para IPv4, Z'0806' para ARP.
