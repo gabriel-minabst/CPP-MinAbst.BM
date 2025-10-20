@@ -112,9 +112,7 @@ ________________________________________________________________________________
 ====================================================
 -> Registradores (x86, ARM e PowerPC):
 ====================================================
-
 1. x86:
-
 -] 8-bit:
 AL: Acumulador Baixo/Low
 AH: Acumulador Alto/High
@@ -162,7 +160,6 @@ R10 - R15: Registradores Gerais
 --------------------------------------------------------------------------------------------------
 
 2. ARMv7/v8 (x32, x64):
-
 -] 32-bit:
 R0: Argumento 1 / Valor de Retorno
 R1: Argumento 2
@@ -185,14 +182,13 @@ SP: Stack Pointer
 X29: Frame Pointer
 -------------------------------------------
 3. PowerPC (x32, x64)
-
 R1: Stack Pointer (Ponteiro de Pilha)
 R3: Argumento 1 / Valor de Retorno
 R4: Argumento 2
 R5: Argumento 3
 R6: Argumento 4
 R7: Argumento 5
-R14:vVolátil (Variável Temporária)
+R14: Volátil (Variável Temporária)
 R30 - R31: Variáveis Locais (Preservados pela Chamada)
 ______________________________________________________________________________________________________________________________________________________________________
 
@@ -202,7 +198,6 @@ ________________________________________________________________________________
 -> Parâmetros-Chave:
 PRESSED_KEY: .byte 0x00: Deve ser movido para AL
 -----------------------------------------------------------------------------------
-
 -> Computador:
 0x01 - Esc
 0x02 - 1
@@ -364,18 +359,15 @@ ________________________________________________________________________________
 ============
 -} Gráficos:
 ============
--] Windows:
-> Requer a chamada de códigos do GUC/SMU/GSP, e o código inteiro em um .sys empacotado com um executor dele.
+! Nota: Todos os dados devem estar em %BX/%EBX/%RBX/%R1/%X1/%R4.
 
--] Linux:
-> Requer a chamada de códigos do GUC/SMU/GSP, e o código inteiro em um .ko empacotado com um executor dele.
+-] Windows e Linux:
+> Requer a chamada de códigos do GUC/SMU/GSP, e o código inteiro em um .sys/.ko empacotado com um executor dele.
 
--> Parâmetros-Chave:
 1. Comandos do GSP:
 - Padrão de Alocação é o tamanho da memória em bytes, HeapID é VRAM e 4096 é o alinhamento.
 
 -] Intel:
-- Padrão de Alocação é o tamanho da memória em bytes, HeapID é VRAM e 4096 é o alinhamento.
 Iniciar: GUC_CMD_GLOBAL_INIT
 Alocar: GUC_CMD_ALLOC_RESOURCE <SIZE>, <HeapID>, <ALIGN>
 Escrever: GUC_CMD_QUEUE_RING_FLUSH
@@ -665,10 +657,11 @@ ________________________________________________________________________________
 ========================================================
 -} Áudio (Para efeitos sonoros e músicas no seu código):
 ========================================================
--] Windows:
-> Requer > Requer "INT 15h/0x15/0x00000015/0x0000000000000015, %AX/%EAX/%RAX/%R0/%X0/%R3/=E820h/0x0000E820/0x000000000000E820", Delta Pi no Base e chamada de códigos do HDA, além do código de todo o projeto em um arquivo .sys e seu executor.
+! Nota: Todos os dados devem estar em %BX/%EBX/%RBX/%R1/%X1/%R4.
 
--> Parâmetros Gerais:
+-] Windows e Linux:
+> Requer "INT 15h/0x15/0x00000015/0x0000000000000015, %AX/%EAX/%RAX/%R0/%X0/%R3/=E820h/0x0000E820/0x000000000000E820", Delta Pi no Base e chamada de códigos do HDA, além do código de todo o projeto em um arquivo .sys/.ko e seu executor.
+
 1. Chamadas de Comandos do HDA (Universal em PCs):
 - Padrôes de formato de stream são NID 0x06, Stream Format 0x200, e Payload 0x441.
 - Padrões de Ativação do Dispositivo de Áudio são 0x40 para a Saída e 0x80 para o Headphone.
@@ -694,33 +687,3 @@ NEG_MAX_AMPLITUDE .short -32767: Amplitude Negativa de Bits.
 PHASE_ACC: resd 1: DoubleWord reservado para o Acumulador de Fase.
 DELTA_PI: .long 42852281: Incremento de Fase (Frequência * 2^32 / Sample Rate).
 -------------------------------------------------------------------------------------------------------------------------------------
-
--] Linux:
-> Requer "INT 15h/0x15/0x00000015/0x0000000000000015, %AX/%EAX/%RAX/%R0/%X0/%R3/=E820h/0x0000E820/0x000000000000E820" e chamada de comandos do HDA, além do código de todo o projeto em um arquivo .ko e seu executor.
-
--> Parâmetros Gerais:
-1. Chamadas de Comandos do HDA (Universal em PCs):
-- Padrôes de formato de stream são NID 0x06, Stream Format 0x200, e Payload 0x441.
-- Padrões de Ativação do Dispositivo de Áudio são 0x40 para a Saída e 0x80 para o Headphone.
-CALL SET_STREAM_FORMAT <NID> <STREAM_FORMAT> <PAYLOAD>: Define a taxa, bits e canais para 48kHz/16bit/Estéreo no DAC/ADC.
-CALL SET_PIN_WIDGET_CONTROL <NID> <ENABLE_OUT>: Ativa o pino de saída físico (Ex: Headphone) e sua função de saída.
-MOV [DELTA_PI], %BX/%EBX/RBX/%R1/%X1/%R4
-CALL SET_DMA_RUN_BIT: Aciona o controlador HDA para iniciar o loop de transferência de dados do Ring Buffer para o CODEC.
------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-2. Definição de Parâmetros de Áudio, Low/Neg_Max e High/Max:
-PI .double 3.14159265358979323846: Número PI.
-SAMPLE_RATE .equ 44100: Frequência de amostragem (Fs).
-FREQUENCY .short 440: Frequência do seno (f).
-DURATION .byte 1: Duração em segundos.
-BITS_PER_SAMPLE .byte 16: Profundidade de bits.
-MAX_AMPLITUDE .short 32767: Amplitude de Bits.
-NEG_MAX_AMPLITUDE .short -32767: Amplitude Negativa de Bits.
-----------------------------------------------------------------------------------------------------------
-
-3. Cálculo da Onda Senoidal e Escrita na Memória:
-
-.section .bss
-PHASE_ACC: resd: DoubleWord reservado para o Acumulador de Fase.
-DELTA_PI: .long 42852281: Incremento de Fase (Frequência * 2^32 / Sample Rate).
------------------------------------------------------------------------------------------------------------------------------------
