@@ -67,11 +67,12 @@ STOP: Encerra a execução do programa de forma normal.
 -> Usa uma interrupção para ver um mapa de memória, permitindo que escreva nela.
 
 1. Interrupções de Discos Rígidos:
-Leitura: CALL Z'13h'/Z'00000013'/Z'0000000000000013', AH=Z'42h'/Z'00000042'/Z'0000000000000042'
-Escrita: CALL Z'13h'/Z'00000013'/Z'0000000000000013', AH=Z'43h'/Z'00000043'/Z'0000000000000043'
+Leitura: CALL Z'13h'/Z'00000013'/Z'0000000000000013', Z'42h'/Z'00000042'/Z'0000000000000042'
+Escrita: CALL Z'13h'/Z'00000013'/Z'0000000000000013', Z'43h'/Z'00000043'/Z'0000000000000043'
 
-2. Interrupções de RAM:
-Mapeamento: CALL Z'15h'/Z'00000015'/Z'0000000000000015', AH=Z'E820h'/Z'0000E820'/Z'000000000000E820'
+2. Interrupções de RAM/VRAM:
+Mapeamento de RAM: CALL Z'15h'/Z'00000015'/Z'0000000000000015', Z'E820h'/Z'0000E820'/Z'000000000000E820'
+Mapeamento de VRAM: CALL Z'10h'/Z'00000010'/Z'0000000000000010'
 
 3. Mapeamento de Disco:
 Uso: Definir DAP, Chamar INT de Leitura de Disco Rígido, e depois Chamar INT de Escrita no Disco Rígido.
@@ -91,17 +92,20 @@ DAP_BLK_CNT = Z'0001'
 DAP_OFFSET = MMAP16_PTR/MMAP32_PTR/MMAP64_PTR
 
 4. Mapeamento de RAM:
-INTEGER MMAP16_PTR, MMAP32_PTR, MMAP64_PTR
-COMMON MMAP16_PTR, MMAP32_PTR, MMAP64_PTR
+INTEGER MMAP16_PTR, MMAP32_PTR, MMAP64_PTR, VMMAP16_PTR, VMMAP32_PTR, VMMAP64_PTR
+COMMON MMAP16_PTR, MMAP32_PTR, MMAP64_PTR, VMMAP16_PTR, VMMAP32_PTR, VMMAP64_PTR
 MMAP16_PTR = Z'E820h'
 MMAP32_PTR = Z'0000E820'
 MMAP64_PTR = Z'000000000000E820'
+VMMAP16_PTR = Z'10h'
+VMMAP32_PTR = Z'00000010'
+VMMAP64_PTR = Z'0000000000000010'
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ================
 -} Web (TCP/IP):
 ================
--> Requer que o código inteiro esteja em um .sys/.ko.
+-> Requer que o código inteiro esteja em um .sys/.ko, e PAYLOAD atrelado a MMAP16_PTR/MMAP32_PTR/MMAP64_PTR.
 
 1. Comandos Fixos do Firmware de Rede Intel (Variáveis definidas, mas usando CALL para chamar eles.):
 CTRL Z'0000': Controle Geral do Chip (Reset, Enable/Disable)
