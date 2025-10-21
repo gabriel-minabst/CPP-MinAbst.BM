@@ -18,21 +18,21 @@
 ===============================
 -} Operadores e Palavras-Chave:
 ===============================
-.AND.:
-.OR.:
-.NOT.:
-.EQ.:
-.NE.:
-.LT.:
-.LE.:
-.GT.:
-.GE.:
+.AND.: E Lógico. "(X .GT. 5) .AND. (Y .LT. 10)"
+.OR.: OU Lógico. "(A .EQ. B) .OR. (C .NE. D)"
+.NOT.: NÃO Lógico. ".NOT. (FLAG .EQ. .TRUE.)"
+.EQ.: Igual a. "IF (A .EQ. B) THEN"
+.NE.: Diferente de. "IF (X .NE. 0) THEN"
+.LT.: Menor que. "IF (I .LT. MAX) THEN"
+.LE.: Menor ou igual a. "IF (T .LE. 100.0) THEN)"
+.GT.: Maior que. "IF (J .GT. 50) THEN"
+.GE.: Maior ou igual a "IF (K .GE. MIN_VAL) THEN"
 PROGRAM: Inicia o programa principal.
 ENDPROGRAM: Finaliza o programa principal.
 INTEGER: Declara uma variável como número inteiro.
 REAL: Declara uma variável como número de ponto flutuante (precisão simples).
 DOUBLE PRECISION: Declara uma variável de ponto flutuante de precisão dupla.
-COMMON:
+COMMON: Aloca uma área de memória de acesso global. Qualquer rotina que inclua a mesma instrução COMMON (com os mesmos nomes de variáveis ou uma lista de variáveis de tamanho compatível) pode acessar e modificar esses dados.
 COMPLEX: Declara uma variável como número complexo.
 LOGICAL: Declara uma variável booleana (.TRUE. ou .FALSE.).
 CHARACTER: Declara uma variável de string.
@@ -67,11 +67,11 @@ STOP: Encerra a execução do programa de forma normal.
 -> Usa uma interrupção para ver um mapa de memória, permitindo que escreva nela.
 
 1. Interrupções de Discos Rígidos:
-Leitura: CALL INT Z'13h'/Z'00000013'/Z'0000000000000013', AH=Z'42h'/Z'00000042'/Z'0000000000000042'
-Escrita: CALL INT Z'13h'/Z'00000013'/Z'0000000000000013', AH=Z'43h'/Z'00000043'/Z'0000000000000043'
+Leitura: CALL Z'13h'/Z'00000013'/Z'0000000000000013', AH=Z'42h'/Z'00000042'/Z'0000000000000042'
+Escrita: CALL Z'13h'/Z'00000013'/Z'0000000000000013', AH=Z'43h'/Z'00000043'/Z'0000000000000043'
 
 2. Interrupções de RAM:
-Mapeamento: CALL INT Z'15h'/Z'00000015'/Z'0000000000000015', AH=Z'E820h'/Z'0000E820'/Z'000000000000E820'
+Mapeamento: CALL Z'15h'/Z'00000015'/Z'0000000000000015', AH=Z'E820h'/Z'0000E820'/Z'000000000000E820'
 
 3. Mapeamento de Disco:
 Uso: Definir DAP, Chamar INT de Leitura de Disco Rígido, e depois Chamar INT de Escrita no Disco Rígido.
