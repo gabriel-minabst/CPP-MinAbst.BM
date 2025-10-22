@@ -408,5 +408,5 @@ SYN-ACK = 0x12: Resposta Fixa (Z'10' ACK + Z'02' SYN).
 SIM-ACK = 0x10: Reconhecimento Fixo.
 PSH-ACK = 0x18: Envio de Dados Fixo (Z'08' PSH + Z'10' ACK).
 FIN-ACK = 0x11: Encerramento Fixo (Z'01' FIN + Z'10' ACK).
-RST = 0x04: Reinício Fixo.:
+RST = 0x04: Reinício Fixo.
 ____________________________________________________________________________________________
