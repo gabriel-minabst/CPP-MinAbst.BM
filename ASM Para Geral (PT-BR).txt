@@ -166,12 +166,19 @@ VMMAP64_PTR = 0x0000000000000010
 =============
  -} Entrada:
 =============
-Uso: CALL [Função/Comando] e CMP PRESSED_KEY, $1
+Uso: CALL [Função/Comando], CMP PRESSED_BTN, $1 e CMP PRESSED_KEY, $1
 
 -> Parâmetros-Chave:
+PRESSED_BTN = 0x01:
 PRESSED_KEY = 0x00: Deve ser movido para %ACUMULADOR
 
  1. Computador:
+1.1: Mouse:
+0x01 - Botão Esquerdo
+0x02 - Botão Direito
+0x04 - Botão Auxiliar
+
+1.2: Teclado:
 0x01 - Esc
 0x02 - 1
 0x03 - 2
