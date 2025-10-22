@@ -404,9 +404,9 @@ CHKSUM = 0x10 (Variável): Resultado do cálculo do Pseudo-Cabeçalho + TCP + Da
 URGENCY_POINT = 0x12 (Fixo): Ponto de Urgência Fixo (Geralmente 0x0000).
 OPT_FILL = 0x14 (Variável): Usado se o Data Offset for maior que 5.
 SYN = 0x02: Início Fixo.
-SYN-ACK = 0x12: Resposta Fixa (Z'10' ACK + Z'02' SYN).
+SYN-ACK = 0x12: Resposta Fixa (0x10 ACK + 0x02 SYN).
 SIM-ACK = 0x10: Reconhecimento Fixo.
-PSH-ACK = 0x18: Envio de Dados Fixo (Z'08' PSH + Z'10' ACK).
-FIN-ACK = 0x11: Encerramento Fixo (Z'01' FIN + Z'10' ACK).
+PSH-ACK = 0x18: Envio de Dados Fixo (0x08 PSH + 0x10 ACK).
+FIN-ACK = 0x11: Encerramento Fixo (0x01 FIN + 0x10 ACK).
 RST = 0x04: Reinício Fixo.
 ____________________________________________________________________________________________
