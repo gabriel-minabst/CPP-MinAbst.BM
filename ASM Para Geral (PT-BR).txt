@@ -133,12 +133,12 @@ CR (Condition Register): Armazena o resultado de operações de comparação, cr
 -> Usa uma interrupção para ver um mapa de memória, permitindo que escreva nela.
 
 1. Interrupções de Discos Rígidos:
-Leitura: CALL 13h/0x00000013/0x0000000000000013, 42h/Z'00000042/0x0000000000000042
+Leitura: CALL 13h/0x00000013/0x0000000000000013, 42h/0x00000042/0x0000000000000042
 Escrita: CALL 13h/0x00000013/0x0000000000000013, 43h/0x00000043/0x0000000000000043
 
 2. Interrupções de RAM/VRAM:
-Mapeamento de RAM: CALL 15h/0x00000015/0x0000000000000015, 0xE820h/0x0000E820/0x000000000000E820
-Mapeamento de VRAM: CALL 10h/0x00000010/0x000000000000001
+Mapeamento de RAM: CALL 15h/0x00000015/0x0000000000000015, E820h/0x0000E820/0x000000000000E820
+Mapeamento de VRAM: CALL 10h/0x00000010/0x0000000000000010
 
 3. Mapeamento de Disco:
 Uso: Definir DAP, Chamar INT de Leitura de Disco Rígido, e depois Chamar INT de Escrita no Disco Rígido.
@@ -334,7 +334,7 @@ B = 0xFF
 CELL1 = "desenho"
 CELL_X = 80
 CELL_Y = 25
-CELL1_OFFSET = (CELL1_Y * WIDTH * DEPTH) + (CELL1_X * DEPTH)
+CELL1_OFFSET = (CELL1_Y * WIDTH * HEIGHT * DEPTH) + (CELL1_X * DEPTH)
 
 ===========
  -} Áudio:
