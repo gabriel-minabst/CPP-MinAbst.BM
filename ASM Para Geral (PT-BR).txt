@@ -1,0 +1,412 @@
+================ GNU Assembly para Geral (Diretivas, Prefixos, Sufixos, Instruções, Registradores, Mapeamento de Memória, Entrada, Gráficos, Áudio, Web) ================
+
+==============
+ -} Diretivas
+==============
+
+ 1. Diretivas:
+.text: Diretiva que marca o início da seção de código (instruções executáveis).
+.data: Diretiva que marca o início da seção de dados inicializados (variáveis com valores).
+.bss: Diretiva que marca o início da seção de dados não inicializados (variáveis sem valores iniciais).
+.section: Diretiva genérica para definir uma seção no programa (muitas vezes usada para configurar as seções acima).
+.globl: Diretiva para tornar um símbolo (rótulo) acessível externamente (ex: _start em programas Linux).
+.extern: Diretiva para declarar que um símbolo está definido em outro arquivo ou biblioteca.
+.type: Diretiva usada para descrever o tipo de um símbolo (ex: @function ou @object).
+.align: Diretiva para garantir que o próximo dado ou instrução esteja alinhado a um limite de memória específico.
+.equ: Diretiva para definir um valor simbólico que pode ser usado em qualquer lugar (como uma constante).
+.set: Diretiva semelhante a .equ, permite redefinir o valor de um símbolo.
+.byte: Diretiva para definir dados de 8 bits.
+.word: Diretiva para definir dados de 16 bits.
+.long: Diretiva para definir dados de 32 bits.
+.quad: Diretiva para definir dados de 64 bits.
+.code16: Diretiva para definir códigos de 16 bits.
+.code32: Diretiva para definir códigos de 32 bits.
+.code64: Diretiva para definir códigos de 64 bits.
+.ascii: Diretiva para definir uma string de caracteres.
+.asciz: Diretiva para definir uma string de caracteres terminada em zero (\0).
+.fill: Diretiva para preencher um espaço de memória com um determinado valor.
+Rótulo (Label): Um símbolo definido pelo programador (ex: loop_inicio:) que representa um endereço de memória para dados ou código.
+
+ 2. Prefixos Essenciais:
+%: Indica que o operando é um registrador.
+$: Indica que o operando é um valor constante (imediato).
+Sem Sufixo: Rótulos/Variáveis.
+(): Indica que o valor entre parênteses é um endereço ou a base para um cálculo de endereço.
+
+ 3. Sufixos de Tamanho de Registrador:
+B: 8-bit.
+W: 16-bit.
+L: 32-bit.
+Q: 64-bit.
+
+=================================================
+ -} Instruções Essenciais da Linguagem Assembly:
+=================================================
+ 1. Manipulação de Dados (Movimentação e Armazenamento)
+
+MOV (Move):Copia dados de uma origem para um destino (registrador para registrador, imediato para registrador, etc.).
+LOAD (ou LW, LB): Move dados da memória para um registrador.
+STORE (ou SW, SB): Move dados de um registrador para a memória.
+PUSH: Armazena o valor de um registrador ou memória no topo da Pilha (*Stack*), decrementando o ponteiro da pilha.
+POP: Recupera o valor do topo da Pilha para um registrador ou memória, incrementando o ponteiro da pilha.
+
+ 2. Aritmética e Lógica
+
+ADD (Add): Soma dois operandos e armazena o resultado.
+SUB (Subtract): Subtrai o segundo operando do primeiro e armazena o resultado.
+MUL (Multiply): Multiplica dois operandos.
+DIV (Divide): Divide um operando por outro.
+INC (Increment): Adiciona 1 a um operando.
+DEC (Decrement): Subtrai 1 de um operando.
+AND: Realiza a operação lógica E (*AND*) a nível de bit.
+OR: Realiza a operação lógica OU (*OR*) a nível de bit.
+XOR (Exclusive OR): Realiza a operação lógica OU Exclusivo (*XOR*) a nível de bit.
+NOT: Inverte todos os bits de um operando (negação).
+SHL/SAL (Shift Left/Arithmetic Left):** Desloca os bits para a esquerda.
+SHR/SAR (Shift Right/Arithmetic Right):** Desloca os bits para a direita.
+ROL/ROR:
+
+ 3. Controle de Fluxo (Decisão e Pulo)
+
+CMP (Compare): Compara dois operandos, definindo as *Flags* do processador (sem alterar os operandos).
+TEST: Realiza uma operação AND lógica sem armazenar o resultado, usada para testar *flags* de bits.
+JMP (Jump): Pulo incondicional, desvia o fluxo de execução para um novo endereço/rótulo.
+JZ / JE (Jump Zero / Jump Equal): Pulo condicional se o resultado da comparação anterior for zero (ou se os operandos eram iguais).
+JNZ / JNE (Jump Not Zero / Jump Not Equal): Pulo condicional se o resultado não for zero (ou se os operandos eram diferentes).
+JG / JNLE (Jump Greater / Jump Not Less or Equal): Pulo condicional se o primeiro operando era maior que o segundo (usado com números inteiros assinados).
+JL / JNGE (Jump Less / Jump Not Greater or Equal): Pulo condicional se o primeiro operando era menor que o segundo (usado com números inteiros assinados).
+CALL: Desvia a execução para um procedimento (sub-rotina) e salva o endereço de retorno na Pilha.
+RET (Return): Retorna de um procedimento, recuperando o endereço de retorno da Pilha.
+
+ 4. Instruções do Sistema (Específicas de Arquitetura)
+
+INT (Interrupt): Gera uma interrupção de software (comum em Assembly DOS/8086 para chamadas de sistema).
+SYSCALL (System Call): Instrução moderna para entrar no kernel e solicitar serviços do sistema operacional (comum em Assembly x86-64 Linux).
+NOP (No Operation): Uma instrução que não faz nada; usada para alinhamento ou atrasos.
+
+===================================================================
+ -} Registradores (Intel/AMD x16/32/64, ARMv7/v8, PowerPC x32/64):
+===================================================================
+ 1. Intel/AMD x16/32/64
+AX/EAX/RAX (Acumulador): Principalmente para operações aritméticas e para armazenar o **valor de retorno de funções.
+BX/RBX/RBX (Base): Registrador de propósito geral, frequentemente usado para indexação ou ponteiro de base (embora seja "callee-saved"—deve ser preservado).
+CX/ECX/RCX (Contador): Usado como contador em instruções de *loop* e *string*.
+DX/EDX/RDX (Dados): Usado para operações de E/S e como extensão do AX/EAX/RAX em operações de multiplicação/divisão de 64 bits.
+SP/ESP/RSP (Stack Pointer): Aponta para o topo da Pilha (*Stack*).
+BP/EBP/RBP (Base Pointer): Aponta para a base da *Stack Frame atual (útil para referenciar variáveis locais).
+SI/ESI/RSI (Source Index): Usado para indexar a fonte em operações de manipulação de *string*.
+DI/EDI/RDI (Destination Index): Usado para indexar o **destino** em operações de manipulação de *string*.
+R8 - R15 (Propósito Geral): Registradores adicionais de propósito geral que facilitam a passagem de argumentos em funções modernas (Convenção de Chamada Linux/Windows).
+RIP (Instruction Pointer): Contém o endereço da **próxima instrução a ser executada** (não é acessível diretamente).
+
+ 2. ARMv7:
+R0 - R3: Registradores de Propósito Geral, principalmente usados para **passagem de argumentos** em funções e para retornar valores.
+R4 - R11: Registradores de Propósito Geral, geralmente reservados (devem ser preservados pela função que está sendo chamada).
+R12 (IP - *Intra-Procedure*): Registrador temporário para a ligação de procedimentos.
+R13 (SP - *Stack Pointer*): Aponta para o topo da Pilha.
+R14 (LR - *Link Register*): Armazena o endereço de retorno** quando uma função (BL) é chamada.
+R15 (PC - *Program Counter*): Contém o endereço da próxima instrução.
+
+ 2.1 ARMv8:
+X0 - X7: Registradores de Propósito Geral, usados para **passagem de argumentos de funções e retorno de valores (X0/W0).
+X8 (LR): Usado para armazenar o endereço de retorno quando a função é chamada via BLR (Branch and Link Register).
+X9 - X15: Registradores temporários (não precisam ser preservados).
+X19 - X28: Registradores salvos pelo chamador (*callee-saved*).
+X29 (FP - *Frame Pointer*): Aponta para a base do *Stack Frame*.
+X30 (LR - *Link Register*): Armazena o endereço de retorno quando a função é chamada via BL (Branch and Link).
+SP (Stack Pointer): Aponta para o topo da Pilha.
+
+ 3. PowerPC 32/64
+r0 (Propósito Geral/Temporário): Frequentemente usado como um registrador temporário ou com regras especiais (ex: pode ser usado para retornar valores em algumas convenções).
+r1 (Stack Pointer): Aponta para o topo da Pilha.
+r2 (TOC Pointer): Aponta para a Tabela de Conteúdo (*Table of Contents*), essencial para o código PowerPC 64-bit.
+r3 - r10: Registradores de Propósito Geral, primariamente usados para **passagem de argumentos** e para **retornar valores** (r3, r4).
+r13: Registrador de Dados de Pequena Seção (usado para acesso rápido a dados globais).
+r31: Registrador de Propósito Geral (usado como *Frame Pointer* em algumas convenções).
+CTR (Count Register): Usado como contador em instruções de *loop* (bdz ou bc).
+LR (Link Register):Armazena o endereço de retorno** após a chamada de uma função (BL).
+CR (Condition Register): Armazena o resultado de operações de comparação, crucial para instruções de salto condicional.
+
+==========================
+ -} Mapeamento de Memória
+==========================
+-> Usa uma interrupção para ver um mapa de memória, permitindo que escreva nela.
+
+1. Interrupções de Discos Rígidos:
+Leitura: CALL 13h/0x00000013'/0x0000000000000013', 42h/Z'00000042'/0x0000000000000042'
+Escrita: CALL 13h/0x00000013'/0x0000000000000013', 43h/0x00000043'/0x0000000000000043'
+
+2. Interrupções de RAM/VRAM:
+Mapeamento de RAM: CALL 15h'/0x00000015'/0x0000000000000015', 0xE820h'/0x0000E820'/0x000000000000E820'
+Mapeamento de VRAM: CALL 10h'/0x00000010'/0x0000000000000010'
+
+3. Mapeamento de Disco:
+Uso: Definir DAP, Chamar INT de Leitura de Disco Rígido, e depois Chamar INT de Escrita no Disco Rígido.
+
+-> DAP (Disk Address Packet):
+DAP_SIZE = 0x00 (Tamanho do DAP): Deve ser 0x10 (16 bytes).
+DAP_RESV = 0x00 (Reservado): Deve ser 0x00.
+DAP_BLK_CNT = 0x0001 (Contagem de Blocos): O número de setores (blocos) a serem lidos. (Ex: 0x0001 para ler apenas um setor).
+DAP_OFFSET Endereço de Transferência (Offset:Segmento): O endereço de 32 bits (16:16) na RAM onde os dados lidos do disco serão enviados. É o endereço de destino (o buffer).
+0x08 (Inicial): O endereço do setor no disco a partir do qual a leitura deve começar. (Ex: 0x0000000000000001) para o primeiro setor após o MBR).
+
+DAP_SIZE = 0x10
+DAP_RESV = 0x00
+DAP_BLK_CNT = 0x0001
+DAP_OFFSET = 0xE820h/0x0000E820/0x000000000000E820
+
+4. Mapeamento de RAM:
+MMAP16_PTR = 0xE820h
+MMAP32_PTR = 0x0000E820
+MMAP64_PTR = 0x000000000000E820
+VMMAP16_PTR = 10h
+VMMAP32_PTR = 0x00000010
+VMMAP64_PTR = 0x0000000000000010
+
+=============
+ -} Entrada:
+=============
+Uso: CALL [Função/Comando] e CMP PRESSED_KEY, $1
+
+-> Parâmetros-Chave:
+PRESSED_KEY = 0x00: Deve ser movido para %ACUMULADOR
+
+ 1. Computador:
+0x01 - Esc
+0x02 - 1
+0x03 - 2
+0x04 - 3
+0x05 - 4
+0x06 - 5
+0x07 - 6
+0x08 - 7
+0x09 - 8
+0x0A - 9
+0x0B - 0
+0x0C - -
+0x0D - =
+0x0E - Backspace
+0x0F - Tab
+0x10 - Q
+0x11 - W
+0x12 - E
+0x13 - R
+0x14 - T
+0x15 - Y
+0x16 - U
+0x17 - I
+0x18 - O
+0x19 - P
+0x1A - ´ (acento agudo)
+0x1B - [ (abre colchete)
+0x1C - Enter
+0x1D - Ctrl esquerdo
+0x1E - A
+0x1F - S
+0x20 - D
+0x21 - F
+0x22 - G
+0x23 - H
+0x24 - J
+0x25 - K
+0x26 - L
+0x27 - Ç
+0x28' - ~ (til)
+0x29 - ` (crase)
+0x2A - Shift esquerdo
+0x2B - \ (barra invertida)
+0x2C - Z
+0x2D - X
+0x2E - C
+0x2F - V
+0x30 - B
+0x31 - N
+0x32 - M
+0x33 - , (vírgula)
+0x34 - . (ponto)
+0x35 - ; (ponto e vírgula)
+0x36 - Shift direito
+0x37 - * (no teclado numérico)
+0x38 - Alt esquerdo
+0x39 - Espaço
+0x3A - Caps Lock
+0x3B - F1
+0x3C - F2
+0x3D - F3
+0x3E - F4
+0x3F - F5
+0x40 - F6
+0x41 - F7
+0x42 - F8
+0x43 - F9
+0x44 - F10
+0x45 - Num Lock
+0x46 - Scroll Lock
+0x47 - 7 (teclado numérico)
+0x48 - 8
+0x49 - 9
+0x4A - -
+0x4B - 4
+0x4C - 5
+0x4D - 6
+0x4E - +
+0x4F - 1
+0x50 - 2
+0x51 - 3
+0x52 - 0
+0x53 - . (ponto do teclado numérico)
+0x57 - F11
+0x58 - F12
+
+ 2. Celular:
+I2C_START_TRANSMISSION: Gerar a condição START (SDA LOW, SCL HIGH). Iniciar a comunicação com o TCIC.
+I2C_SEND_SLAVE_ADDR_WRITE 0x00: Enviar o endereço do TCIC + bit de escrita (0). Dizer ao TCIC para escutar o endereço de registro.
+I2C_SEND_SLAVE_ADDR_READ 0x00: Gerar REPEATED START ou START + Endereço do TCIC + bit de leitura (1). Dizer ao TCIC para enviar os dados.
+I2C_WRITE_BYTE (REG_ADDR): Enviar o endereço do registrador interno do TCIC (ex: 0x814E). Especificar qual dado (status, X, Y, pressão) o TCIC deve retornar.
+I2C_READ_BYTE (ACK/NACK): Ler 8 bits do TCIC. Receber o Status, a Posição, ou o valor de Pressão.
+I2C_STOP_TRANSMISSION: Gerar a condição STOP (SDA HIGH, SCL HIGH). Finalizar a transação.
+
+ 3. Consoles:
+
+3.1. PlayStation:
+Cima: 0x00
+Direita: 0x02
+Baixo: 0x04
+Esquerda: 0x06
+Centro: 0x08 ou 0x0F
+Quadrado: 0x60
+X: 0x61
+Bolinha: 0x62
+Triângulo: 0x63
+L1: 0x64
+R1: 0x65
+L2: 0x66
+R2: 0x67
+Share: 0x68
+Options: 0x69
+L3: 0x6C
+R3: 0x6D
+Touchpad: 0x6A
+LEFT_STICK_X: (0x0000 a 0xFFFF)
+LEFT_STICK_Y: (0x0000 a 0xFFFF)
+RIGHT_STICK_X: (0x0000 a 0xFFFF)
+RIGHT_STICK_Y: (0x0000 a 0xFFFF)
+
+3.2. Xbox:
+D-Pad Cima: 0x01
+D-Pad Baixo: 0x02
+D-Pad Direita: 0x03
+D-Pad Esquerda: 0x04
+Start: 0x05
+Back: 0x06
+L-Stick: 0x07
+R-Stick: 0x08
+A: 0x0C
+B: 0x0D
+X: 0x0E
+Y: 0x0F
+LB: 0x09
+RB: 0x0A
+LT: (0x00 a 0xFF)
+RT: (0x00 a 0xFF)
+
+==============
+ -} Gráficos:
+==============
+-> Requer todos os Dados Gráficos no VMMAP16_PTR/VMMAP32_PTR/VMMAP64_PTR e um valor de cor varia de 0 a 255 (0x00 a 0xFF).
+-> Fórmula do OFFSET: Offset da Célula = (CELL1_Y * WIDTH * DEPTH) + (CELL1_X * DEPTH)
+
+1. Elementos Gráficos, Células, Valores RGB Indexados e Coordenadas de Posição:
+█ Bloco Sólido: FULL_BLOCK = 0xDB
+▓ Sombra Escura: HI_SHADE = 0xB2
+▒ Sombra Média: MID_SHADE = 0xB1
+░ Sombra Leve: LOW_SHADE = 0xB0
+
+R = (0x00' a 0xFF'): Nível da Cor Vermelha
+G = (0x00' a 0xFF'): Nível da Cor Verde
+B = (0x00' a 0xFF'): Nível da Cor Azul
+
+WIDTH = 160
+DEPTH = 3
+R = 0xFF
+G = 0x00
+B = 0xFF
+CELL1 = "desenho"
+CELL_X = 80
+CELL_Y = 25
+CELL1_OFFSET = (CELL1_Y * WIDTH * DEPTH) + (CELL1_X * DEPTH)
+
+===========
+ -} Áudio:
+===========
+-> Requer Delta Pi no MMAP16_PTR/MMAP32_PTR/MMAP64_PTR.
+
+1. Definição de Parâmetros de Áudio, Low/NegMax, High/Max e Geração de Onda Senoidal:
+PRECISION PI = 3.14159265358979323846: Número PI.
+SAMPLE_RATE = 44100: Frequência de amostragem (Fs).
+FREQUENCY = 440: Frequência do seno (f).
+DURATION = 1: Duração em segundos.
+BITS_PER_SAMPLE = 16: Profundidade de bits.
+MAX_AMPLITUDE = 32767: Amplitude de Bits.
+NEG_MAX_AMPLITUDE = -32767: Amplitude Negativa de Bits.
+PHASE_ACC = 1
+DELTA_PI = (FREQUENCY * 2.0 * PI / SAMPLE_RATE).
+
+==================
+ -} Web (TCP/IP):
+==================
+-> Requer que o código inteiro esteja em um .sys/.ko e PAYLOAD atrelado a MMAP16_PTR/MMAP32_PTR/MMAP64_PTR, além dos dados gráficos do site em outro PAYLOAD atrelado a VMMAP16_PTR/VMMAP32_PTR/VMMAP64_PTR.
+
+1. Comandos Fixos do Firmware de Rede Intel (Variáveis definidas, mas usando CALL para chamar eles.):
+CTRL 0x0000: Controle Geral do Chip (Reset, Enable/Disable)
+STATUS 0x0008: Status Geral do Link (Link Up/Down)
+EERD 0x0014: Leitura da EEPROM/NVM (para ler o MAC)
+IMC 0x00D0: Máscara de Interrupção (para ignorar/habilitar interrupções)
+RCTL 0x0100: Controle de Recepção
+RAL 0x5400: Endereço MAC (Lower 32-bit).
+RAH 0x5404: Endereço MAC (Upper 32-bit)
+RDBAL 0x2800: Endereço Base do Anel de Descriptores Rx (Lower)
+RDBAH 0x2804: Endereço Base do Anel de Descritores Rx (Upper)
+RDLEN 0x2808: Tamanho do Anel de Descritores Rx
+RDH 0x2810: Cabeça (Head) do Anel RX
+RDT 0x2818: Cauda (Tail) do Anel Rx
+TCTL 0x0400: Controle de Transmissão
+TDBAL 0x3800: Endereço Base Baixo do Anel de Descritores Tx.
+TDBAH 0x3804: Endereço Base Alto do Anel de Descritores Tx
+TDLEN 0x3808: Tamanho do Anel de Descritores Tx
+TDH 0x3810: Cabeça (Head) do Anel Tx
+TDT 0x3818: Cauda (Tail) do Anel Tx
+---------------------------------------------------------------------------------
+2. Parâmetros do TCP/IP (Variáveis Definidas do Pacote):
+
+2.1. Frame Ethernet:
+MAC_DESTINY = 0x00: Endereço MAC do próximo dispositivo na rede (roteador ou host final).
+MAC_ORIGIN = 0x06: Seu endereço MAC. Este é o MAC lido do NIC da Intel.
+ETHERTYPE = 0x0800 (Fixo): Identifica o protocolo da Camada 3. 0x0800 para IPv4, 0x0806 para ARP.
+PAYLOAD = 0x0E: O Cabeçalho IP começa aqui.
+CRC =(Checksum de Frame): Este campo é gerado e anexado AUTOMATICAMENTE pelo controlador Intel no momento da transmissão.
+------------------------------------------------------------------------------------------------------------------------
+2.2. Cabeçalho IPv4:
+VERSION_IHL = 0x00: Geralmente 0x45. (Versão 4, IHL 5 - 20 bytes).
+PROTOCOL = 0x06: 0x06 (para TCP) ou 0x11 (para UDP).
+CHKSUM_HEADER = 0x0A: O campo que você deve calcular em bare-metal, usando o algoritmo de Soma Complementar de Um.
+IP_ORIGIN = 0x0C: Seu Endereço IP. (Variável).
+IP_DESTINY= 0x10: Endereço IP do host de destino. (Variável).
+----------------------------------------------------------------------------------------------------------------
+2.3. Cabecalho TCP:
+PORT_ORIGIN = 0x00 (Fixo): Sua porta (aplicação/serviço local).
+PORT_DESTINY = 0x02 (Fixo): Porta do serviço remoto (ex: 80, 443).
+SEQUENCE = 0x04 (Variável): Posição do primeiro byte de dados do segmento.
+ACK = 0x08 (Reconhecimento Variável): Próximo número de sequência esperado do lado remoto.
+RES_FLAGS = 0x0C (Variável): Contém o Data Offset e os Control Flags.
+WINDOW_SIZE = 0x0E (Variável): Controle de fluxo (Buffer de recepção disponível).
+CHKSUM = 0x10 (Variável): Resultado do cálculo do Pseudo-Cabeçalho + TCP + Dados.
+URGENCY_POINT = 0x12 (Fixo): Ponto de Urgência Fixo (Geralmente 0x0000).
+OPT_FILL = 0x14 (Variável): Usado se o Data Offset for maior que 5.
+SYN = 0x02: Início Fixo.
+SYN-ACK = 0x12: Resposta Fixa (Z'10' ACK + Z'02' SYN).
+SIM-ACK = 0x10: Reconhecimento Fixo.
+PSH-ACK = 0x18: Envio de Dados Fixo (Z'08' PSH + Z'10' ACK).
+FIN-ACK = 0x11: Encerramento Fixo (Z'01' FIN + Z'10' ACK).
+RST = 0x04: Reinício Fixo.:
+____________________________________________________________________________________________
