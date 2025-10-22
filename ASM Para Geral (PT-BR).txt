@@ -138,7 +138,7 @@ Escrita: CALL 13h/0x00000013/0x0000000000000013, 43h/0x00000043/0x00000000000000
 
 2. Interrupções de RAM/VRAM:
 Mapeamento de RAM: CALL 15h/0x00000015/0x0000000000000015, 0xE820h/0x0000E820/0x000000000000E820
-Mapeamento de VRAM: CALL 10h/0x00000010/0x000000000000001'
+Mapeamento de VRAM: CALL 10h/0x00000010/0x000000000000001
 
 3. Mapeamento de Disco:
 Uso: Definir DAP, Chamar INT de Leitura de Disco Rígido, e depois Chamar INT de Escrita no Disco Rígido.
