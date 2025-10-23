@@ -167,7 +167,7 @@ VMMAP64_PTR = 0x0000000000000010
  -} Entrada:
 =============
  1. Computador:
-1.1: Mouse: 
+1.1: Mouse:
 0x01 - Botão Esquerdo
 0x02 - Botão Direito
 0x04 - Botão Auxiliar
@@ -177,7 +177,7 @@ MOUSE_INT_ID = .equ 33h/0x00000033/0x0000000000000033
 GET_MOUSE_STATUS = .equ 03h/0x00000003/0x0000000000000003
 CALL MOUSE_INT_ID, GET_MOUSE_STATUS
 MOV [BUTTON_STATUS], %BASE
-MOV [MOUSE_X], %CONTADOR 
+MOV [MOUSE_X], %CONTADOR
 MOV[MOUSE_Y], %DADOS
 CMP [MOUSE_X], 100
 JL _cmp_endx:
@@ -335,24 +335,23 @@ RT: (0x00 a 0xFF)
  -} Gráficos:
 ==============
 -> Requer todos os Dados Gráficos no VMMAP16_PTR/VMMAP32_PTR/VMMAP64_PTR e um valor de cor varia de 0 a 255 (0x00 a 0xFF).
--> Fórmula do OFFSET: Offset da Célula = (CELL1_Y * WIDTH * DEPTH) + (CELL1_X * DEPTH)
 
 1. Elementos Gráficos, Células, Valores RGB Indexados e Coordenadas de Posição:
-█ Bloco Sólido: FULL_BLOCK = 0xDB
-▓ Sombra Escura: HI_SHADE = 0xB2
-▒ Sombra Média: MID_SHADE = 0xB1
-░ Sombra Leve: LOW_SHADE = 0xB0
-
-WIDTH = 160
+FULL_BLOCK = 0xDB: (█ Bloco Sólido)
+HI_SHADE = 0xB2: (▓ Sombra Escura)
+MID_SHADE = 0xB1: (▒ Sombra Média)
+LOW_SHADE = 0xB0: (░ Sombra Leve)
+WIDTH = 240
+HEIGHT = 67
 DEPTH = 3
 R = (0x00' a 0xFF'): Nível da Cor Vermelha
 G = (0x00' a 0xFF'): Nível da Cor Verde
 B = (0x00' a 0xFF'): Nível da Cor Azul
 CELL1_START_X =
 CELL1_END_X =
-CELL1_START_Y = 
+CELL1_START_Y =
 CELL1_END_Y =
-CELL1_CENTER = 
+CELL1_CENTER =
 N = 0/1/2/3/4
 L = Soma de todas as coordenadas.
 CELL1_OFFSET = MMAP16/32/64_ADDR + (N * L)
@@ -363,7 +362,7 @@ CELL1_OFFSET = MMAP16/32/64_ADDR + (N * L)
 -> Requer Delta Pi no MMAP16_PTR/MMAP32_PTR/MMAP64_PTR.
 
 1. Definição de Parâmetros de Áudio, Low/NegMax, High/Max e Geração de Onda Senoidal:
-PI = 314159265358979323846: Número PI.
+PI = 3.14159265358979323846: Número PI.
 SAMPLE_RATE = 44100: Frequência de amostragem (Fs).
 FREQUENCY = 440: Frequência do seno (f).
 DURATION = 1: Duração em segundos.
