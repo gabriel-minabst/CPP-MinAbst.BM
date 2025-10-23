@@ -343,19 +343,19 @@ RT: (0x00 a 0xFF)
 ▒ Sombra Média: MID_SHADE = 0xB1
 ░ Sombra Leve: LOW_SHADE = 0xB0
 
+WIDTH = 160
+DEPTH = 3
 R = (0x00' a 0xFF'): Nível da Cor Vermelha
 G = (0x00' a 0xFF'): Nível da Cor Verde
 B = (0x00' a 0xFF'): Nível da Cor Azul
-
-WIDTH = 160
-DEPTH = 3
-R = 0xFF
-G = 0x00
-B = 0xFF
-CELL1 = "desenho"
-CELL_X = 80
-CELL_Y = 25
-CELL1_OFFSET = (CELL1_Y * WIDTH * HEIGHT * DEPTH) + (CELL1_X * DEPTH)
+CELL1_START_X =
+CELL1_END_X =
+CELL1_START_Y = 
+CELL1_END_Y =
+CELL1_CENTER = 
+N = 0/1/2/3/4
+L = Soma de todas as coordenadas.
+CELL1_OFFSET = MMAP16/32/64_ADDR + (N * L)
 
 ===========
  -} Áudio:
