@@ -337,10 +337,10 @@ RT: (0x00 a 0xFF)
 -> Requer todos os Dados Gráficos no VMMAP16_PTR/VMMAP32_PTR/VMMAP64_PTR e um valor de cor varia de 0 a 255 (0x00 a 0xFF).
 
 1. Elementos Gráficos, Células, Valores RGB Indexados e Coordenadas de Posição:
-FULL_BLOCK = 0xDB: (█ Bloco Sólido)
-HI_SHADE = 0xB2: (▓ Sombra Escura)
-MID_SHADE = 0xB1: (▒ Sombra Média)
-LOW_SHADE = 0xB0: (░ Sombra Leve)
+FULL_BLOCK = 0xDB: Bloco Sólido (█)
+HI_SHADE = 0xB2: Sombra Escura (▓)
+MID_SHADE = 0xB1: Sombra Média (▒)
+LOW_SHADE = 0xB0: Sombra Leve (░)
 WIDTH = 240
 HEIGHT = 67
 DEPTH = 3
