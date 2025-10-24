@@ -159,9 +159,9 @@ DAP_OFFSET = 0xE820h/0x0000E820/0x000000000000E820
 MMAP16_PTR = 0xE820h
 MMAP32_PTR = 0x0000E820
 MMAP64_PTR = 0x000000000000E820
-VMMAP16_PTR = 10h
-VMMAP32_PTR = 0x00000010
-VMMAP64_PTR = 0x0000000000000010
+VMMAP16_PTR = 100h
+VMMAP32_PTR = 0x00000100
+VMMAP64_PTR = 0x0000000000000100
 
 =============
  -} Entrada:
@@ -341,18 +341,18 @@ FULL_BLOCK = 0xDB: Bloco Sólido (█)
 HI_SHADE = 0xB2: Sombra Escura (▓)
 MID_SHADE = 0xB1: Sombra Média (▒)
 LOW_SHADE = 0xB0: Sombra Leve (░)
-WIDTH = 240
-HEIGHT = 67
+WIDTH = 320
+HEIGHT = 200
 DEPTH = 3
 R = (0x00' a 0xFF'): Nível da Cor Vermelha
 G = (0x00' a 0xFF'): Nível da Cor Verde
 B = (0x00' a 0xFF'): Nível da Cor Azul
 CELL1 = .ascii "desenho"
 CELL1_X =
-CELL1_Y
+CELL1_Y =
 N = 0/1/2/3/4
 L = Soma de todas as coordenadas.
-CELL1_OFFSET = MMAP16/32/64_ADDR + (N * L)
+CELL1_OFFSET = (CELL_Y *)
 
 ===========
  -} Áudio:
