@@ -350,9 +350,7 @@ B = (0x00' a 0xFF'): Nível da Cor Azul
 CELL1 = .ascii "desenho"
 CELL1_X =
 CELL1_Y =
-N = 0/1/2/3/4
-L = Soma de todas as coordenadas.
-CELL1_OFFSET = (CELL_Y *)
+CELL1_OFFSET = (CELL1_Y * (WIDTH * DEPTH)) + (CELL1_X * DEPTH)
 
 ===========
  -} Áudio:
