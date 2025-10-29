@@ -125,26 +125,8 @@ VMMAP64_PTR = 0x0000000000000100
 0x02 - Botão Direito
 0x04 - Botão Auxiliar
 
--> Parâmetros-Chave:
-MOUSE_INT_ID = .equ 33h/0x00000033/0x0000000000000033
-GET_MOUSE_STATUS = .equ 03h/0x00000003/0x0000000000000003
-CALL MOUSE_INT_ID, GET_MOUSE_STATUS
-MOV [BUTTON_STATUS], %BASE
-MOV [MOUSE_X], %CONTADOR
-MOV[MOUSE_Y], %DADOS
-CMP [MOUSE_X], 100
-JL _cmp_endx:
-CMP [MOUSE_X], 200
-JG _cmp_starty:
-CMP [MOUSE_Y], 50
-JL _cmp_endy:
-CMP [MOUSE_Y], 100
-JG _cmp_clk:
-TEST %BASE, 1
-JNZ _ação:
-
 1.2: Teclado:
-Uso: CMP 0x02, 1, JMP _ação:
+Uso: if (0x02 = 1) { then _ação: }
 
 0x01 - Esc
 0x02 - 1
@@ -284,42 +266,20 @@ RB: 0x0A
 LT: (0x00 a 0xFF)
 RT: (0x00 a 0xFF)
 
-==============
- -} Gráficos:
-==============
--> Requer todos os Dados Gráficos no VMMAP16_PTR/VMMAP32_PTR/VMMAP64_PTR e um valor de cor varia de 0 a 255 (0x00 a 0xFF).
-
-1. Elementos Gráficos, Células, Valores RGB Indexados e Coordenadas de Posição:
-FULL_BLOCK = 0xDB: Bloco Sólido (█)
-HI_SHADE = 0xB2: Sombra Escura (▓)
-MID_SHADE = 0xB1: Sombra Média (▒)
-LOW_SHADE = 0xB0: Sombra Leve (░)
-WIDTH = 320
-HEIGHT = 200
-DEPTH = 3
-R = (0x00' a 0xFF'): Nível da Cor Vermelha
-G = (0x00' a 0xFF'): Nível da Cor Verde
-B = (0x00' a 0xFF'): Nível da Cor Azul
-CELL1 = .ascii "desenho"
-CELL1_X =
-CELL1_Y =
-CELL1_OFFSET = (CELL1_Y * (WIDTH * DEPTH)) + (CELL1_X * DEPTH)
-
-===========
- -} Áudio:
-===========
--> Requer Delta Pi no MMAP16_PTR/MMAP32_PTR/MMAP64_PTR.
-
-1. Definição de Parâmetros de Áudio, Low/NegMax, High/Max e Geração de Onda Senoidal:
-PI = 3.14159265358979323846: Número PI.
-SAMPLE_RATE = 44100: Frequência de amostragem (Fs).
-FREQUENCY = 440: Frequência do seno (f).
-DURATION = 1: Duração em segundos.
-BITS_PER_SAMPLE = 16: Profundidade de bits.
-MAX_AMPLITUDE = 32767: Amplitude de Bits.
-NEG_MAX_AMPLITUDE = -32767: Amplitude Negativa de Bits.
-PHASE_ACC = 1
-DELTA_PI = (FREQUENCY * 2 * PI / SAMPLE_RATE).
+=============================
+ -} Gráficos e Áudio com Qt:
+=============================
+QWidget(): É a classe base para todos os objetos de interface de usuário (UI) no Qt. Usada para criar janelas, caixas de diálogo e componentes personalizados.
+QApplication(): Gerencia os recursos do aplicativo e o laço de eventos (event loop). É essencial para iniciar qualquer aplicação Qt que use uma interface gráfica.
+QLabel(): Usado para exibir texto ou uma imagem em uma janela.
+QPushButton(): Cria um botão clicável, um elemento básico de interação.
+QImage(): Oferece uma representação de imagem independente de hardware. Ideal para modificação e processamento de pixels (ex: redimensionar, cortar, mudar cores).
+QPixmap(): Usado para desenhar imagens otimizadas para a tela. É mais eficiente para exibir imagens estáticas ou em UI.
+QPainter(): Usado para desenhar formas geométricas, texto e imagens em QWidget, QImage ou QPixmap.
+QtMultimedia(): É o módulo que contém todas as classes de multimídia (incluindo áudio). Você precisa importá-lo em seu projeto.
+QMediaPlayer(): Interface de alto nível para reproduzir conteúdo multimídia, incluindo arquivos de áudio e vídeo (para áudio, lida com formatos como MP3, WAV, etc.).
+QMediaContent(): Representa o conteúdo de mídia a ser reproduzido. Usado para carregar o arquivo de áudio no QMediaPlayer.
+QSoundEffect(): Usado para tocar efeitos sonoros curtos e não críticos, com foco em baixa latência (útil para sons de interface ou jogos).
 
 ==================
  -} Web (TCP/IP):
