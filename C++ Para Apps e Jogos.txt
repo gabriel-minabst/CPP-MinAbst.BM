@@ -1,0 +1,305 @@
+================ C++ para Apps e Jogos (Palavras-Chave, Entrada, Gráficos, Áudio, Web) ================
+
+===================
+ -} Palavras-Chave
+===================
+alignas: Especifica o alinhamento de uma variável ou tipo.
+alignof: Obtém o alinhamento de um tipo em bytes.
+asm: Permite a inclusão de código Assembly (linguagem de máquina).
+auto: Habilita a inferência de tipo para variáveis, deduzindo o tipo a partir do inicializador.
+bool: Tipo de dado booleano, representa true (verdadeiro) ou false (falso)."
+break: Termina a execução do loop (for, while, do-while) ou switch mais interno."
+case: Rótulo dentro de uma instrução switch para definir um valor específico.
+catch: Bloco para capturar exceções lançadas dentro do bloco try.
+char: Tipo de dado para um caractere.
+char8_t: Tipo para caracteres UTF-8 (C++20).
+char16_t: Tipo para caracteres UTF-16.
+char32_t: Tipo para caracteres UTF-32.
+class: Define uma classe, o bloco de construção fundamental da Programação Orientada a Objetos."
+const: Especifica que uma variável não pode ser modificada após a inicialização.
+consteval: Especifica que uma função deve produzir um valor de tempo de compilação (C++20).
+constexpr: Especifica que o valor pode ser avaliado em tempo de compilação.
+constinit: Especifica inicialização estática em tempo de compilação (C++20).
+const_cast: Usado para remover ou adicionar const ou volatile a uma variável.
+continue: Ignora o restante do corpo do loop na iteração atual e avança para a próxima.
+decltype: Determina o tipo de uma expressão.
+default: Especifica o rótulo padrão em uma instrução switch ou um especificador de função para usar o comportamento padrão.
+delete: Operador para desalocar memória alocada com new (libera a memória).
+do: Inicia um loop do-while, garantindo que o corpo do loop seja executado pelo menos uma vez."
+double: Tipo de dado de ponto flutuante de precisão dupla.
+else: Parte opcional de uma instrução if que é executada quando a condição é falsa.
+enum: Declara um tipo de enumeração, um conjunto de constantes nomeadas."
+explicit: Impede conversões de tipo implícitas indesejadas.
+export: Usado na declaração de Módulos para indicar entidades que são exportadas (C++20).
+extern: Declara que uma variável ou função é definida em outro lugar.
+false: Literal booleano que representa o valor falso.
+float: Tipo de dado de ponto flutuante de precisão simples.
+for: Inicia um loop de repetição.
+friend: Permite que uma função ou classe acesse membros privados e protegidos de outra classe.
+goto: Transfere o controle do programa para um rótulo.
+if: Executa código condicionalmente, se uma condição for verdadeira."
+inline: Sugere que o compilador expanda a função no local da chamada (em linha).
+int: Tipo de dado inteiro fundamental.
+long: Modificador de tipo para especificar maior precisão inteira (ex: long int, long double)."
+mutable: Permite que um membro de uma classe seja modificado mesmo que o objeto seja declarado como const.
+namespace: Define um escopo para identificadores (nomes de funções, classes, etc.)."
+new: Operador para alocar memória dinamicamente (reserva a memória).
+noexcept: Especifica que uma função não lançará exceções.
+nullptr: Literal de ponteiro nulo (C++11).
+operator: Usado para sobrecarregar (redefinir) operadores.
+private: Especificador de acesso; membros só podem ser acessados pela própria classe.
+protected: Especificador de acesso; membros podem ser acessados pela própria classe e classes derivadas.
+public: Especificador de acesso; membros podem ser acessados por qualquer código.
+register: Sugestão de armazenamento em registradores da CPU (obsoleto e geralmente ignorado).
+reinterpret_cast: Usado para conversões de tipo de baixo nível (entre ponteiros e inteiros, por exemplo)."
+requires: Cláusula para impor restrições (Requisitos) em parâmetros de template (C++20).
+return: Sai de uma função e pode retornar um valor.
+short: Modificador de tipo para especificar menor precisão inteira (ex: short int).
+signed: Modificador de tipo para especificar que um inteiro pode ter valores negativos.
+sizeof: Obtém o tamanho em bytes de um tipo ou objeto.
+static: Especifica que uma variável ou função tem alocação de armazenamento estático ou pertence à classe/arquivo.
+static_assert: Executa uma verificação de asserção em tempo de compilação.
+static_cast: Usado para conversões de tipo razoáveis e previsíveis (de um tipo para outro relacionado).
+struct: Semelhante a uma classe, mas os membros são públicos por padrão."
+switch: Estrutura de controle para multi-ramificação condicional.
+template: Usado para definir funções e classes genéricas.
+this: Ponteiro que aponta para a instância atual do objeto.
+thread_local: Especifica que um objeto é local para um thread (C++11).
+throw: Lança uma exceção.
+true: Literal booleano que representa o valor verdadeiro.
+try: Bloco de código onde podem ocorrer exceções.
+typedef: Cria um alias para um tipo existente.
+typeid: Operador para obter informações de tipo de tempo de execução (RTTI).
+typename: Indica que um identificador dependente é um nome de tipo (muito usado em templates).
+union: Um tipo de dado que pode armazenar membros diferentes no mesmo local de memória.
+unsigned: Modificador de tipo para especificar que um inteiro armazena apenas valores positivos.
+using: Usado para diretivas de namespace, declarações using e aliases de tipo (C++11)."
+virtual: Usado para funções de membro que podem ser substituídas em classes derivadas (polimorfismo).
+void: Indica a ausência de tipo (ex: função que não retorna valor).
+volatile: Avisa o compilador de que uma variável pode ser modificada por algo fora do controle do programa.
+wchar_t: Tipo de dado de caractere largo.
+while: Inicia um loop de repetição que continua enquanto uma condição é verdadeira.
+
+=============
+ -} Entrada:
+=============
+ 1. Computador:
+1.1: Mouse:
+0x01 - Botão Esquerdo
+0x02 - Botão Direito
+0x04 - Botão Auxiliar
+
+1.2: Teclado:
+Uso: if (0x02 = 1) { then _ação: }
+
+0x01 - Esc
+0x02 - 1
+0x03 - 2
+0x04 - 3
+0x05 - 4
+0x06 - 5
+0x07 - 6
+0x08 - 7
+0x09 - 8
+0x0A - 9
+0x0B - 0
+0x0C - -
+0x0D - =
+0x0E - Backspace
+0x0F - Tab
+0x10 - Q
+0x11 - W
+0x12 - E
+0x13 - R
+0x14 - T
+0x15 - Y
+0x16 - U
+0x17 - I
+0x18 - O
+0x19 - P
+0x1A - ´ (acento agudo)
+0x1B - [ (abre colchete)
+0x1C - Enter
+0x1D - Ctrl esquerdo
+0x1E - A
+0x1F - S
+0x20 - D
+0x21 - F
+0x22 - G
+0x23 - H
+0x24 - J
+0x25 - K
+0x26 - L
+0x27 - Ç
+0x28' - ~ (til)
+0x29 - ` (crase)
+0x2A - Shift esquerdo
+0x2B - \ (barra invertida)
+0x2C - Z
+0x2D - X
+0x2E - C
+0x2F - V
+0x30 - B
+0x31 - N
+0x32 - M
+0x33 - , (vírgula)
+0x34 - . (ponto)
+0x35 - ; (ponto e vírgula)
+0x36 - Shift direito
+0x37 - * (no teclado numérico)
+0x38 - Alt esquerdo
+0x39 - Espaço
+0x3A - Caps Lock
+0x3B - F1
+0x3C - F2
+0x3D - F3
+0x3E - F4
+0x3F - F5
+0x40 - F6
+0x41 - F7
+0x42 - F8
+0x43 - F9
+0x44 - F10
+0x45 - Num Lock
+0x46 - Scroll Lock
+0x47 - 7 (teclado numérico)
+0x48 - 8
+0x49 - 9
+0x4A - -
+0x4B - 4
+0x4C - 5
+0x4D - 6
+0x4E - +
+0x4F - 1
+0x50 - 2
+0x51 - 3
+0x52 - 0
+0x53 - . (ponto do teclado numérico)
+0x57 - F11
+0x58 - F12
+
+ 2. Celular:
+I2C_START_TRANSMISSION: Gerar a condição START (SDA LOW, SCL HIGH). Iniciar a comunicação com o TCIC.
+I2C_SEND_SLAVE_ADDR_WRITE 0x00: Enviar o endereço do TCIC + bit de escrita (0). Dizer ao TCIC para escutar o endereço de registro.
+I2C_SEND_SLAVE_ADDR_READ 0x00: Gerar REPEATED START ou START + Endereço do TCIC + bit de leitura (1). Dizer ao TCIC para enviar os dados.
+I2C_WRITE_BYTE (REG_ADDR): Enviar o endereço do registrador interno do TCIC (ex: 0x814E). Especificar qual dado (status, X, Y, pressão) o TCIC deve retornar.
+I2C_READ_BYTE (ACK/NACK): Ler 8 bits do TCIC. Receber o Status, a Posição, ou o valor de Pressão.
+I2C_STOP_TRANSMISSION: Gerar a condição STOP (SDA HIGH, SCL HIGH). Finalizar a transação.
+
+ 3. Consoles:
+
+3.1. PlayStation:
+Cima: 0x00
+Direita: 0x02
+Baixo: 0x04
+Esquerda: 0x06
+Centro: 0x08 ou 0x0F
+Quadrado: 0x60
+X: 0x61
+Bolinha: 0x62
+Triângulo: 0x63
+L1: 0x64
+R1: 0x65
+L2: 0x66
+R2: 0x67
+Share: 0x68
+Options: 0x69
+L3: 0x6C
+R3: 0x6D
+Touchpad: 0x6A
+LEFT_STICK_X: (0x0000 a 0xFFFF)
+LEFT_STICK_Y: (0x0000 a 0xFFFF)
+RIGHT_STICK_X: (0x0000 a 0xFFFF)
+RIGHT_STICK_Y: (0x0000 a 0xFFFF)
+
+3.2. Xbox:
+D-Pad Cima: 0x01
+D-Pad Baixo: 0x02
+D-Pad Direita: 0x03
+D-Pad Esquerda: 0x04
+Start: 0x05
+Back: 0x06
+L-Stick: 0x07
+R-Stick: 0x08
+A: 0x0C
+B: 0x0D
+X: 0x0E
+Y: 0x0F
+LB: 0x09
+RB: 0x0A
+LT: (0x00 a 0xFF)
+RT: (0x00 a 0xFF)
+
+=============================
+ -} Gráficos e Áudio com Qt:
+=============================
+QWidget(): É a classe base para todos os objetos de interface de usuário (UI) no Qt. Usada para criar janelas, caixas de diálogo e componentes personalizados.
+QApplication(): Gerencia os recursos do aplicativo e o laço de eventos (event loop). É essencial para iniciar qualquer aplicação Qt que use uma interface gráfica.
+QLabel(): Usado para exibir texto ou uma imagem em uma janela.
+QPushButton(): Cria um botão clicável, um elemento básico de interação.
+QImage(): Oferece uma representação de imagem independente de hardware. Ideal para modificação e processamento de pixels (ex: redimensionar, cortar, mudar cores).
+QPixmap(): Usado para desenhar imagens otimizadas para a tela. É mais eficiente para exibir imagens estáticas ou em UI.
+QPainter(): Usado para desenhar formas geométricas, texto e imagens em QWidget, QImage ou QPixmap.
+QtMultimedia(): É o módulo que contém todas as classes de multimídia (incluindo áudio). Você precisa importá-lo em seu projeto.
+QMediaPlayer(): Interface de alto nível para reproduzir conteúdo multimídia, incluindo arquivos de áudio e vídeo (para áudio, lida com formatos como MP3, WAV, etc.).
+QMediaContent(): Representa o conteúdo de mídia a ser reproduzido. Usado para carregar o arquivo de áudio no QMediaPlayer.
+QSoundEffect(): Usado para tocar efeitos sonoros curtos e não críticos, com foco em baixa latência (útil para sons de interface ou jogos).
+
+==================
+ -} Web (TCP/IP):
+==================
+-> Requer que o código inteiro esteja em um .sys/.ko e PAYLOAD atrelado a MMAP16_PTR/MMAP32_PTR/MMAP64_PTR, além dos dados gráficos do site em outro PAYLOAD atrelado a VMMAP16_PTR/VMMAP32_PTR/VMMAP64_PTR.
+
+1. Comandos Fixos do Firmware de Rede Intel (Variáveis definidas, mas usando CALL para chamar eles.):
+CTRL 0x0000: Controle Geral do Chip (Reset, Enable/Disable)
+STATUS 0x0008: Status Geral do Link (Link Up/Down)
+EERD 0x0014: Leitura da EEPROM/NVM (para ler o MAC)
+IMC 0x00D0: Máscara de Interrupção (para ignorar/habilitar interrupções)
+RCTL 0x0100: Controle de Recepção
+RAL 0x5400: Endereço MAC (Lower 32-bit).
+RAH 0x5404: Endereço MAC (Upper 32-bit)
+RDBAL 0x2800: Endereço Base do Anel de Descriptores Rx (Lower)
+RDBAH 0x2804: Endereço Base do Anel de Descritores Rx (Upper)
+RDLEN 0x2808: Tamanho do Anel de Descritores Rx
+RDH 0x2810: Cabeça (Head) do Anel RX
+RDT 0x2818: Cauda (Tail) do Anel Rx
+TCTL 0x0400: Controle de Transmissão
+TDBAL 0x3800: Endereço Base Baixo do Anel de Descritores Tx.
+TDBAH 0x3804: Endereço Base Alto do Anel de Descritores Tx
+TDLEN 0x3808: Tamanho do Anel de Descritores Tx
+TDH 0x3810: Cabeça (Head) do Anel Tx
+TDT 0x3818: Cauda (Tail) do Anel Tx
+---------------------------------------------------------------------------------
+2. Parâmetros do TCP/IP (Variáveis Definidas do Pacote):
+
+2.1. Frame Ethernet:
+MAC_DESTINY = 0x00: Endereço MAC do próximo dispositivo na rede (roteador ou host final).
+MAC_ORIGIN = 0x06: Seu endereço MAC. Este é o MAC lido do NIC da Intel.
+ETHERTYPE = 0x0800 (Fixo): Identifica o protocolo da Camada 3. 0x0800 para IPv4, 0x0806 para ARP.
+PAYLOAD = 0x0E: O Cabeçalho IP começa aqui.
+CRC =(Checksum de Frame): Este campo é gerado e anexado AUTOMATICAMENTE pelo controlador Intel no momento da transmissão.
+------------------------------------------------------------------------------------------------------------------------
+2.2. Cabeçalho IPv4:
+VERSION_IHL = 0x00: Geralmente 0x45. (Versão 4, IHL 5 - 20 bytes).
+PROTOCOL = 0x06: 0x06 (para TCP) ou 0x11 (para UDP).
+CHKSUM_HEADER = 0x0A: O campo que você deve calcular em bare-metal, usando o algoritmo de Soma Complementar de Um.
+IP_ORIGIN = 0x0C: Seu Endereço IP. (Variável).
+IP_DESTINY= 0x10: Endereço IP do host de destino. (Variável).
+----------------------------------------------------------------------------------------------------------------
+2.3. Cabecalho TCP:
+PORT_ORIGIN = 0x00 (Fixo): Sua porta (aplicação/serviço local).
+PORT_DESTINY = 0x02 (Fixo): Porta do serviço remoto (ex: 80, 443).
+SEQUENCE = 0x04 (Variável): Posição do primeiro byte de dados do segmento.
+ACK = 0x08 (Reconhecimento Variável): Próximo número de sequência esperado do lado remoto.
+RES_FLAGS = 0x0C (Variável): Contém o Data Offset e os Control Flags.
+WINDOW_SIZE = 0x0E (Variável): Controle de fluxo (Buffer de recepção disponível).
+CHKSUM = 0x10 (Variável): Resultado do cálculo do Pseudo-Cabeçalho + TCP + Dados.
+URGENCY_POINT = 0x12 (Fixo): Ponto de Urgência Fixo (Geralmente 0x0000).
+OPT_FILL = 0x14 (Variável): Usado se o Data Offset for maior que 5.
+SYN = 0x02: Início Fixo.
+SYN-ACK = 0x12: Resposta Fixa (0x10 ACK + 0x02 SYN).
+SIM-ACK = 0x10: Reconhecimento Fixo.
+PSH-ACK = 0x18: Envio de Dados Fixo (0x08 PSH + 0x10 ACK).
+FIN-ACK = 0x11: Encerramento Fixo (0x01 FIN + 0x10 ACK).
+RST = 0x04: Reinício Fixo.
+____________________________________________________________________________________________
