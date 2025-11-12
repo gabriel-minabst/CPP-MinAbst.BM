@@ -233,22 +233,55 @@ RT: (0x00 a 0xFF)
 =============================
  -} Gráficos e Áudio com Qt:
 =============================
-QWidget(): É a classe base para todos os objetos de interface de usuário (UI) no Qt. Usada para criar janelas, caixas de diálogo e componentes personalizados.
-QApplication(): Gerencia os recursos do aplicativo e o laço de eventos (event loop). É essencial para iniciar qualquer aplicação Qt que use uma interface gráfica.
-QLabel(): Usado para exibir texto ou uma imagem em uma janela.
-QPushButton(): Cria um botão clicável, um elemento básico de interação.
-QImage(): Oferece uma representação de imagem independente de hardware. Ideal para modificação e processamento de pixels (ex: redimensionar, cortar, mudar cores).
-QPixmap(): Usado para desenhar imagens otimizadas para a tela. É mais eficiente para exibir imagens estáticas ou em UI.
-QPainter(): Usado para desenhar formas geométricas, texto e imagens em QWidget, QImage ou QPixmap.
+QWidget(): É a classe base para todos os objetos de interface de usuário (UI) no Qt. Usada para criar janelas, caixas de diálogo e componentes personalizados. Uso: QWidget *minhaJanela = new QWidget(); <br> minhaJanela->setWindowTitle("Minha Aplicação"); <br> minhaJanela->show();
+
+QApplication(): Gerencia os recursos do aplicativo e o laço de eventos (*event loop*). É essencial para iniciar qualquer aplicação Qt que use uma interface gráfica. Uso:
+int main(int argc, char *argv[]) {
+    QApplication app(argc, argv);
+    // ... código do widget ...
+    return app.exec(); // Inicia o loop de eventos
+}
+
+QLabel(): Usado para exibir texto ou uma imagem em uma janela. Uso:
+Texto: QLabel *titulo = new QLabel("Olá, Qt!");
+Imagem: QLabel *imgLabel = new QLabel(); <br> imgLabel->setPixmap(meuObjetoPixmap);
+
+QPushButton(): Cria um botão clicável, um elemento básico de interação. Uso: QPushButton *botaoSair = new QPushButton("Sair"); <br> // Conecta o clique do botão à função de sair do aplicativo <br> QObject::connect(botaoSair, &QPushButton::clicked, &app, &QApplication::quit);`
+
+QImage(): Oferece uma representação de imagem independente de hardware. Ideal para modificação e processamento de pixels (ex: redimensionar, cortar, mudar cores). Uso:
+Carregar: QImage img("caminho/imagem.jpg");
+Criar Vazia: QImage buffer(200, 100, QImage::Format_RGB32);
+
+QPixmap sprite("caminho/para/imagem.png"): Usado para desenhar imagens otimizadas para a tela. É mais eficiente para exibir imagens estáticas ou em UI. Uso:
+Carregar: QPixmap icone("caminho/icone.png");
+Redimensionar: QPixmap redimensionada = icone.scaled(64, 64, Qt::KeepAspectRatio);
+
+QPainter painter(sprite): Usado para desenhar formas geométricas, texto e imagens em QWidget, QImage ou QPixmap. Uso:
+QPixmap tela(100, 100);
+QPainter painter(&tela); // Inicializa o pintor para desenhar em 'tela'
+painter.setBrush(Qt::red); // Define a cor de preenchimento
+painter.drawRect(10, 10, 50, 50); // Desenha um retângulo
+painter.end(); // Finaliza o desenho
+
 QtMultimedia(): É o módulo que contém todas as classes de multimídia (incluindo áudio). Você precisa importá-lo em seu projeto.
-QMediaPlayer(): Interface de alto nível para reproduzir conteúdo multimídia, incluindo arquivos de áudio e vídeo (para áudio, lida com formatos como MP3, WAV, etc.).
+QMediaPlayer(): Interface de alto nível para reproduzir conteúdo multimídia (áudio/vídeo). Lida com músicas longas (MP3, WAV, etc.) e streaming. Uso:
+QMediaPlayer *player = new QMediaPlayer();
+QUrl url = QUrl::fromLocalFile("caminho/musica.mp3");
+player->setMedia(QMediaContent(url));
+player->play(); // Inicia a reprodução
+
 QMediaContent(): Representa o conteúdo de mídia a ser reproduzido. Usado para carregar o arquivo de áudio no QMediaPlayer.
-QSoundEffect(): Usado para tocar efeitos sonoros curtos e não críticos, com foco em baixa latência (útil para sons de interface ou jogos).
+
+QSoundEffect(): Usado para tocar efeitos sonoros curtos** e não críticos, com foco em **baixa latência (útil para sons de interface ou jogos). Uso:
+QSoundEffect *efeito = new QSoundEffect();
+efeito->setSource(QUrl::fromLocalFile("click.wav"));
+efeito->setLoopCount(1); // Toca uma vez
+efeito->play(); // Dispara o efeito
 
 ==================
  -} Web (TCP/IP):
 ==================
--> Requer que o código inteiro esteja em um .sys/.ko e PAYLOAD atrelado a MMAP16_PTR/MMAP32_PTR/MMAP64_PTR, além dos dados gráficos do site em outro PAYLOAD atrelado a VMMAP16_PTR/VMMAP32_PTR/VMMAP64_PTR.
+-> Requer que o código inteiro esteja em um .sys/.ko.
 
 1. Comandos Fixos do Firmware de Rede Intel (Variáveis definidas, mas usando CALL para chamar eles.):
 CTRL 0x0000: Controle Geral do Chip (Reset, Enable/Disable)
